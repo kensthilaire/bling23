@@ -10,6 +10,8 @@ while not done:
         input = raw_input('Enter your selection: ')
         if input == '?':
             print bling.menu()
+        elif input == '':
+            bling.stop_animation()
         elif input.lower() == 'q':
             done = True
         else:

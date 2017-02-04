@@ -24,8 +24,10 @@ from BiblioPixelAnimations.strip import Wave
 class Bling(object):
 
     def __init__(self):
+        self.num_leds = 36
+
         #init driver with the type and count of LEDs you're using
-        self.driver = DriverLPD8806(num=18, c_order = ChannelOrder.GRB, SPISpeed=2, use_py_spi=True, dev='/dev/spidev0.0')
+        self.driver = DriverLPD8806(num=self.num_leds, c_order = ChannelOrder.GRB, SPISpeed=2, use_py_spi=True, dev='/dev/spidev0.0')
 
         #init controller
         self.led = LEDStrip(self.driver)
@@ -41,24 +43,60 @@ class Bling(object):
         # of LEDs does not require animation
         self.animate = True
 
+    def num_leds(self):
+        return self.num_leds
 
     def menu(self):
         menu_str  = '\n'
         menu_str += '                              Available Bling Patterns\n\n'
-        menu_str += '(1)  Alternates (two alternating colors)        (11) Rainbow Halves (strand divided in two\n'
-        menu_str += '(2)  Color Chase (one LED moving end to end)    (12) Rainbow (set of colors moving end to end)\n'
-        menu_str += '(3)  Color Fade (one color fading in/out)       (13) Rainbow Cycles (variation of above)\n'
-        menu_str += '(4)  Color Pattern ()                           (14) Linear Rainbow (another variation)\n'
-        menu_str += '(5)  Color Wipe (one color moving up/down)      (15) Search Lights (colors moving up/down)\n'
-        menu_str += '(6)  Fire Flies (colors randomly blinking)      (16) Wave (colors moving up/down)\n'
-        menu_str += '(7)  Scanner (one color moving up/down)         (17) Solid Red (one color on all LEDs)\n'
-        menu_str += '(8)  Rainbow Scanner (colors moving up/down)    (18) Solid Yellow (one color on all LEDs)\n'
-        menu_str += '(9)  Ping Pong (colors bouncing around)         (19) Solid Green (one color on all LEDs)\n'
-        menu_str += '(10) Party Mode (colors blinking on/off)        (20) Test Strip (test pattern for RGB cal.)\n'
+        menu_str += '(1)  Alternates (two alternating colors)        '
+        menu_str += '(14) Linear Rainbow (another variation)\n'
+        menu_str += '(2)  Color Chase (one LED moving end to end)    '
+        menu_str += '(15) Search Lights (colors moving up/down)\n'
+        menu_str += '(3)  Color Fade (one color fading in/out)       '
+        menu_str += '(16) Wave (colors moving up/down)\n'
+        menu_str += '(4)  Color Pattern ()                           '
+        menu_str += '(17) Solid Red (one color on all LEDs)\n'
+        menu_str += '(5)  Color Wipe (one color moving up/down)      '
+        menu_str += '(18) Solid Yellow (one color on all LEDs)\n'
+        menu_str += '(6)  Fire Flies (colors randomly blinking)      '
+        menu_str += '(19) Solid Green (one color on all LEDs)\n'
+        menu_str += '(7)  Scanner (one color moving up/down)         '
+        menu_str += '(20) Test Strip (test pattern for RGB cal.)\n'
+        menu_str += '(8)  Rainbow Scanner (colors moving up/down)    '
+        menu_str += '(21) Blinking Green (slow on all LEDs)\n'
+        menu_str += '(9)  Ping Pong (colors bouncing around)         '
+        menu_str += '(22) Blinking Green (medium on all LEDs)\n'
+        menu_str += '(10) Party Mode (colors blinking on/off)        '
+        menu_str += '(23) Blinking Green (fast on all LEDs)\n'
+        menu_str += '(11) Rainbow Halves (strand divided in two      '
+        menu_str += '(24) Blinking Green (medium on left LEDs)\n'
+        menu_str += '(12) Rainbow (set of colors moving end to end)  '
+        menu_str += '(25) Blinking Green (medium on right LEDs)\n'
+        menu_str += '(13) Rainbow Cycles (variation of above)        '
+        menu_str += '\n'
         menu_str += '\n'
         menu_str += '\n'
     
         return menu_str
+
+    def set_blinking_anim(self, speed, segment):
+        fps_params = { 'SLOW': 2,
+                       'MEDIUM': 4,
+                       'FAST':8 }
+        segment_params = { 'ALL': (0,self.num_leds),
+                           'LEFT': (0, (self.num_leds/2)-1),
+                           'RIGHT': (self.num_leds/2, self.num_leds) }
+        color = [colors.Green]
+        segment_leds = segment_params[segment]
+        self.fps = fps_params[speed]
+        self.anim = PartyMode.PartyMode(self.led, colors=color, 
+                                        start=segment_leds[0], end=segment_leds[1])
+
+    def stop_animation(self):
+        self.anim.stopThread(wait=True)
+        self.led.all_off()
+        self.led.update()
 
     def menu_select( self, menu_selection ):
         result = 'OK'
@@ -145,6 +183,16 @@ class Bling(object):
             # Test Pattern
             # This animation is used to test the strip and the color order
             self.anim = StripChannelTest(self.led)
+        elif menu_selection == 21:
+            self.set_blinking_anim('SLOW', 'ALL')
+        elif menu_selection == 22:
+            self.set_blinking_anim('MEDIUM', 'ALL')
+        elif menu_selection == 23:
+            self.set_blinking_anim('FAST', 'ALL')
+        elif menu_selection == 24:
+            self.set_blinking_anim('MEDIUM', 'LEFT')
+        elif menu_selection == 25:
+            self.set_blinking_anim('MEDIUM', 'RIGHT')
         elif menu_selection == 99:
             # All off
             self.animate = False
@@ -161,7 +209,7 @@ class Bling(object):
         try:
             if self.animate is True:
                 #run the animation
-                self.anim.run(fps=self.fps)
+                self.anim.run(fps=self.fps, threaded=True)
             else:
                 # no animation, just update the LEDs
                 self.led.update()
