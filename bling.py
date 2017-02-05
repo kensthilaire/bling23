@@ -216,7 +216,7 @@ class Bling(object):
         if menu_selection == 1:
             # Alternates
             self.fps = 5
-            self.anim = Alternates.Alternates(self.led, color1=colors.Blue, color2=colors.Orange)
+            self.anim = Alternates.Alternates(self.led, color1=colors.Pink, color2=colors.Purple, color3=colors.Blue)
         elif menu_selection == 2:
             # Color Chase
             self.fps = 10
@@ -235,7 +235,7 @@ class Bling(object):
             self.anim = ColorWipe.ColorWipe(self.led, colors.Green)
         elif menu_selection == 6:
             # Fire Flies
-            self.fps = 10
+            self.fps = 40
             self.anim = FireFlies.FireFlies(self.led, colors=FireFlies.rainbow)
         elif menu_selection == 7:
             # Scanner
