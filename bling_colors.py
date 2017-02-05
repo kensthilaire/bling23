@@ -17,6 +17,7 @@ color_map = {
     'YELLOW': [ colors.Yellow ],
     'BLUE': [ colors.Blue ],
     
+    'TEAM_COLORS' : [ colors.Blue, colors.Orange ],
     'RAINBOW': [colors.Red, colors.Orange, colors.Yellow, colors.Green, colors.Blue, colors.Purple],
 
     # insert all color maps above this line to keep the error colors last    
