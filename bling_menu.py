@@ -1,6 +1,6 @@
 from bling import Bling
 
-bling = Bling()
+bling = Bling(36)
 
 print bling.menu()
 
