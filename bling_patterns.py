@@ -1,4 +1,4 @@
-'''
+s'''
 Created on Feb 5, 2017
 
 @author: ksthilaire
@@ -124,6 +124,228 @@ class BlinkingPattern(BlingPatternBase):
         print 'Setup BlinkingPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
 
         
+class AlternatesPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 2, 'MEDIUM': 5, 'FAST':10 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = Alternates.Alternates(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup AlternatesPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class ColorChasePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 2, 'MEDIUM': 5, 'FAST':10 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        color = bling_colors.get_first_color(color_str)
+        self.animation = ColorChase.ColorChase(led, color=color, start=min_led, end=max_led)
+        print 'Setup ColorChasePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+
+class ColorFadePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = ColorFade.ColorFade(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup ColorFadePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class ColorPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = ColorPattern.ColorPattern(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup ColorPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class ColorWipePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        color = bling_colors.get_first_color(color_str)
+        self.animation = ColorWipe.ColorWipe(led, color=color, start=min_led, end=max_led)
+        print 'Setup ColorWipePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class FireFliesPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = FireFlies.FireFlies(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup FireFliesPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)    
+        
+class ScannerPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 11, 'FAST':25 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        color = bling_colors.get_first_colors(color_str)
+        self.animation = Scanner.Scanner(led, color=color, start=min_led, end=max_led)
+        print 'Setup ScannerPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class RainbowScannerPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = RainbowScanner.RainbowScanner(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup RainbowScannerPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class PingPongPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = PingPong.PingPong(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup PingPongPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class PartyModePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 12, 'FAST':30 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = PartyMode.PartyMode(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup PartModePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class RainbowHalvesPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = RainbowHalves.RainbowHalves(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup RainbowHalvesPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class RainbowPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 50, 'MEDIUM': 100, 'FAST':200 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = Rainbow.Rainbow(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup RainbowPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class RainbowCyclePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 100, 'MEDIUM': 200, 'FAST':400 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = RainbowCycle.RainbowCycle(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup RainbowCyclePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class LinearRainbowPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 25, 'MEDIUM': 50, 'FAST':100 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = LinearRainbow.LinearRainbow(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup LinearRainbowPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class SearchLightsPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = SearchLights.SearchLights(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup SearchLightsPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+class WavePattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 3, 'MEDIUM': 6, 'FAST':12 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        color = bling_colors.get_first_colors(color_str)
+        self.animation = Wave.Wave(led, color=color, start=min_led, end=max_led)
+        print 'Setup WavePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        
+
+        
+class TestPattern(BlingPatternBase):
+    def __init__(self):
+        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
+        
+    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
+        self.led = led
+        self.set_fps(speed_str)
+        print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        colors = bling_colors.get_colors(color_str)
+        self.animation = TestPattern.TestPattern(led, colors=colors, start=min_led, end=max_led)
+        print 'Setup TestPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
 #
 # Helper functions to retrieve the dictionary of bling patterns or to retrieve a single pattern 
 # from the set of supported patterns
