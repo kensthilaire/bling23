@@ -1,9 +1,8 @@
-s'''
+'''
 Created on Feb 5, 2017
 
 @author: ksthilaire
 '''
-
 #
 # import all the animations that are provided by the BiblioPixel animation library
 #
@@ -358,7 +357,23 @@ def get_pattern( pattern_str ):
 patterns = {
     'Solid': SolidPattern(),
     'Blinking': BlinkingPattern(),
-    
+    'Alternates': AlternatesPattern(),
+    'ColorChase': ColorChasePattern(),
+    'ColorFade': ColorFadePattern (),
+    'ColorPattern': Colorpattern(),
+    'ColorWipe': ColorWipePattern(),
+    'FireFlies': FireFliesPattern(),
+    'Scanner': ScannerPattern(),
+    'RainbowScanner': RainbowScannerPattern(),
+    'PingPong': PingPongPattern(),
+    'PartyMode': PartyModePattern(),
+    'RainbowHalves': RainbowHalvesPattern(),
+    'Rainbow': RainbowPattern(),
+    'RainbowCycle': RainbowCyclePattern(),
+    'LinearRainbow': LinearRainbowPattern(),
+    'SearchLights': SearchLightsPattern(),
+    'Wave': WavePattern(),
+    'Test': TestPattern(),
     'Error': ErrorPattern()
     }
 
