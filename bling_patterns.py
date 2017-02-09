@@ -125,7 +125,7 @@ class BlinkingPattern(BlingPatternBase):
         
 class AlternatesPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(AlternatesPattern,self).__init__('Alternates', animated=True)
         self.speed_params = { 'SLOW': 2, 'MEDIUM': 5, 'FAST':10 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -138,20 +138,20 @@ class AlternatesPattern(BlingPatternBase):
         
 class ColorChasePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
-        self.speed_params = { 'SLOW': 2, 'MEDIUM': 5, 'FAST':10 }
+        super(ColorChasePattern,self).__init__('ColorChase', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':20 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         color = bling_colors.get_first_color(color_str)
-        self.animation = ColorChase.ColorChase(led, color=color, start=min_led, end=max_led)
-        print 'Setup ColorChasePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        self.animation = ColorChase.ColorChase(led, color=color, width=DEFAULT_WIDTH, start=min_led, end=max_led)
+        print 'Setup ColorChasePattern Params: color=%s, min=%d, max=%d' % (color, min_led, max_led)
 
 class ColorFadePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(ColorFadePattern,self).__init__('ColorFade', animated=True)
         self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -164,7 +164,7 @@ class ColorFadePattern(BlingPatternBase):
         
 class ColorPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(ColorPatternPattern,self).__init__('ColorPattern', animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -172,13 +172,13 @@ class ColorPattern(BlingPatternBase):
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         colors = bling_colors.get_colors(color_str)
-        self.animation = ColorPattern.ColorPattern(led, colors=colors, start=min_led, end=max_led)
+        self.animation = ColorPattern.ColorPattern(led, colors=colors, width=DEFAULT_WIDTH, start=min_led, end=max_led)
         print 'Setup ColorPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
         
 class ColorWipePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
-        self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
+        super(ColorWipePattern,self).__init__('ColorWipe', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
@@ -186,11 +186,11 @@ class ColorWipePattern(BlingPatternBase):
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         color = bling_colors.get_first_color(color_str)
         self.animation = ColorWipe.ColorWipe(led, color=color, start=min_led, end=max_led)
-        print 'Setup ColorWipePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        print 'Setup ColorWipePattern Params: color=%s, min=%d, max=%d' % (color, min_led, max_led)
         
 class FireFliesPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(FireFliesPattern,self).__init__('FireFlies', animated=True)
         self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -203,8 +203,8 @@ class FireFliesPattern(BlingPatternBase):
         
 class ScannerPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
-        self.speed_params = { 'SLOW': 5, 'MEDIUM': 11, 'FAST':25 }
+        super(ScannerPattern,self).__init__('Scanner', animated=True)
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':25 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
@@ -212,37 +212,39 @@ class ScannerPattern(BlingPatternBase):
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         color = bling_colors.get_first_colors(color_str)
         self.animation = Scanner.Scanner(led, color=color, start=min_led, end=max_led)
-        print 'Setup ScannerPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        print 'Setup ScannerPattern Params: color=%s, min=%d, max=%d' % (color, min_led, max_led)
         
 class RainbowScannerPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(RainbowScannerPattern,self).__init__('RainbowScanner', animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        # The rainbow scanner doesn't actually let us set the colors...
         colors = bling_colors.get_colors(color_str)
-        self.animation = RainbowScanner.RainbowScanner(led, colors=colors, start=min_led, end=max_led)
+        self.animation = RainbowScanner.RainbowScanner(led, start=min_led, end=max_led)
         print 'Setup RainbowScannerPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
         
 class PingPongPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(PingPongPattern,self).__init__('PingPong', animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
-        colors = bling_colors.get_colors(color_str)
-        self.animation = PingPong.PingPong(led, colors=colors, start=min_led, end=max_led)
-        print 'Setup PingPongPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        color = bling_colors.get_first_color(color_str)
+        # The PingPong animation doesn't let us set the range of LEDs, just the max number
+        self.animation = PingPong.PingPong(led, color=color, max_led=max_led)
+        print 'Setup PingPongPattern Params: color=%s, min=%d, max=%d' % (color, min_led, max_led)
         
 class PartyModePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(PartyModePattern,self).__init__('PartyMode', animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 12, 'FAST':30 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -255,7 +257,7 @@ class PartyModePattern(BlingPatternBase):
         
 class RainbowHalvesPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(RainbowHalvesPattern,self).__init__('RainbowHalves', animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -268,33 +270,35 @@ class RainbowHalvesPattern(BlingPatternBase):
         
 class RainbowPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(RainbowPattern,self).__init__('Rainbow', animated=True)
         self.speed_params = { 'SLOW': 50, 'MEDIUM': 100, 'FAST':200 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        # The Rainbow pattern doesn't let us set the colors...
         colors = bling_colors.get_colors(color_str)
-        self.animation = Rainbow.Rainbow(led, colors=colors, start=min_led, end=max_led)
+        self.animation = Rainbow.Rainbow(led, start=min_led, end=max_led)
         print 'Setup RainbowPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
         
 class RainbowCyclePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(RainbowCyclePattern,self).__init__('RainbowCycle', animated=True)
         self.speed_params = { 'SLOW': 100, 'MEDIUM': 200, 'FAST':400 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
+        # The Rainbow pattern doesn't let us set the colors...
         colors = bling_colors.get_colors(color_str)
-        self.animation = RainbowCycle.RainbowCycle(led, colors=colors, start=min_led, end=max_led)
+        self.animation = RainbowCycle.RainbowCycle(led, start=min_led, end=max_led)
         print 'Setup RainbowCyclePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
         
 class LinearRainbowPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(LinearRainbowPattern,self).__init__('LinearRainbow', animated=True)
         self.speed_params = { 'SLOW': 25, 'MEDIUM': 50, 'FAST':100 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -302,12 +306,13 @@ class LinearRainbowPattern(BlingPatternBase):
         self.set_fps(speed_str)
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         colors = bling_colors.get_colors(color_str)
-        self.animation = LinearRainbow.LinearRainbow(led, colors=colors, start=min_led, end=max_led)
+        # LinearRainbow doesn't let us set the colors or the LED range.
+        self.animation = LinearRainbow.LinearRainbow(led, individual_pixel=True, max_led=max_led)
         print 'Setup LinearRainbowPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
         
 class SearchLightsPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(SearchLightsPattern,self).__init__('SearchLights', animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -320,7 +325,7 @@ class SearchLightsPattern(BlingPatternBase):
         
 class WavePattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(WavePattern,self).__init__('Wave', animated=True)
         self.speed_params = { 'SLOW': 3, 'MEDIUM': 6, 'FAST':12 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -329,13 +334,13 @@ class WavePattern(BlingPatternBase):
         print 'color: %s, speed: %s, min: %d, max: %d' % (color_str,speed_str,min_led,max_led)
         color = bling_colors.get_first_colors(color_str)
         self.animation = Wave.Wave(led, color=color, start=min_led, end=max_led)
-        print 'Setup WavePattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+        print 'Setup WavePattern Params: color=%s, min=%d, max=%d' % (color, min_led, max_led)
         
 
         
 class TestPattern(BlingPatternBase):
     def __init__(self):
-        super(BlinkingPattern,self).__init__('Blinking', animated=True)
+        super(TestPattern,self).__init__('Test', animated=True)
         self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -345,6 +350,7 @@ class TestPattern(BlingPatternBase):
         colors = bling_colors.get_colors(color_str)
         self.animation = TestPattern.TestPattern(led, colors=colors, start=min_led, end=max_led)
         print 'Setup TestPattern Params: color=%s, min=%d, max=%d' % (colors, min_led, max_led)
+
 #
 # Helper functions to retrieve the dictionary of bling patterns or to retrieve a single pattern 
 # from the set of supported patterns
@@ -357,6 +363,7 @@ def get_pattern( pattern_str ):
 patterns = {
     'Solid': SolidPattern(),
     'Blinking': BlinkingPattern(),
+<<<<<<< HEAD
     'Alternates': AlternatesPattern(),
     'ColorChase': ColorChasePattern(),
     'ColorFade': ColorFadePattern (),
@@ -373,6 +380,11 @@ patterns = {
     'LinearRainbow': LinearRainbowPattern(),
     'SearchLights': SearchLightsPattern(),
     'Wave': WavePattern(),
+=======
+    
+    'Wave': WavePattern(),
+
+>>>>>>> origin/master
     'Test': TestPattern(),
     'Error': ErrorPattern()
     }

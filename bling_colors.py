@@ -16,7 +16,43 @@ color_map = {
     'GREEN': [ colors.Green ],
     'YELLOW': [ colors.Yellow ],
     'BLUE': [ colors.Blue ],
+    'MIDNIGHTBLUE': [ colors.MidnightBlue ],
+    'TEAL': [ colors.Teal ],
+    'INDIANRED': [ colors.IndianRed ],
+    'SALMON': [ colors.Salmon ],
+    'PLAID': [ colors.Plaid ],
+    'LIGHTPINK': [ colors.LightPink ],
+    'GOLD': [ colors.Gold ],
+    'SIENNA': [ colors.Sienna ],
+    'LIME': [ colors.Lime ],
+    'INDIGO': [ colors.Indigo ],
+    'DARKVIOLET': [ colors.DarkViolet ],
+    'DEEPPINK': [ colors.DeepPink ],
+    'AMETHYST': [ colors.Amethyst ],
+    'MINT': [ colors.MintCream ],
+    'HOTPINK': [ colors.HotPink ],
+    'PINK': [ colors.Pink ],
+    'PURPLE': [ colors.Purple ],
+    'PLUM': [ colors.Plum ],
+    'AQUA': [ colors.Aqua ],
+    'BLACK': [ colors.Black ],
+    'VIOLET': [ colors.Violet ],
+    'NAVY': [ colors.Navy ],
+    'SKY': [ colors.SkyBlue ],
+    'DARKGREEN': [ colors.ForestGreen ],
+    'SEAGREEN': [ colors.SeaGreen ],
+    'MAROON': [ colors.Maroon ],
+    'ORCHID': [ colors.Orchid ],
+    'CORAL': [ colors.Coral ],
+    'OLD': [ colors.OldLace ],
+    'LEMON': [ colors.LemonChiffon ],
+    'ORANGE': [ colors.Orange ],
+    'LIGHTGREEN': [ colors.YellowGreen ],
     
+    
+    
+    'BLACKANDYELLOW': [ colors.Black, colors.Yellow ],
+    'PINKY': [ colors.Pink, colors.HotPink, colors.Salmon, colors.LightPink, colors.DeepPink, colors.Coral],
     'TEAM_COLORS' : [ colors.Blue, colors.Orange ],
     'RAINBOW': [colors.Red, colors.Orange, colors.Yellow, colors.Green, colors.Blue, colors.Purple],
 
@@ -56,3 +92,4 @@ def get_first_color( color_str ):
     
 if __name__ == '__main__':
     pass
+    
