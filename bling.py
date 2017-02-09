@@ -215,8 +215,8 @@ class Bling(object):
 
         if menu_selection == 1:
             # Alternates
-            self.fps = 5
-            self.anim = Alternates.Alternates(self.led, color1=colors.Pink, color2=colors.Purple, color3=colors.Blue)
+            self.process_cmd('Pattern=Alternates,Color=TEAMCOLORS,Speed=MEDIUM,Segment=RIGHT')
+            return
         elif menu_selection == 2:
             # Color Chase
             self.fps = 10
