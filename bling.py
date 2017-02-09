@@ -219,65 +219,55 @@ class Bling(object):
             return
         elif menu_selection == 2:
             # Color Chase
-            self.fps = 10
-            self.anim = ColorChase.ColorChase(self.led, colors.Green)
+            self.process_cmd('Pattern=ColorChase,Color=GREEN,Speed=MEDIUM')
+            return
         elif menu_selection == 3:
             # Color Fade
-            self.fps = 40
-            self.anim = ColorFade.ColorFade(self.led, colors=ColorFade.rainbow)
+            self.process_cmd('Pattern=ColorFade,Color=RAINBOW,Speed=MEDIUM')
+            return
         elif menu_selection == 4:
             # Color Pattern
-            self.fps = 15
-            self.anim = ColorPattern.ColorPattern(self.led, colors=ColorPattern.rainbow, width=3)
+            self.process_cmd('Pattern=ColorPattern,Color=RAINBOW,Speed=MEDIUM')
+            return
         elif menu_selection == 5:
             # Color Wipe
-            self.fps = 15
-            self.anim = ColorWipe.ColorWipe(self.led, colors.Green)
+            self.process_cmd('Pattern=ColorWipe,Color=GREEN,Speed=MEDIUM')
+            return
         elif menu_selection == 6:
             # Fire Flies
-            self.fps = 40
-            self.anim = FireFlies.FireFlies(self.led, colors=FireFlies.rainbow)
+            self.process_cmd('Pattern=FireFLies,Color=RAINBOW,Speed=MEDIUM')
+            return
         elif menu_selection == 7:
             # Scanner
-            self.fps = 10
-            self.anim = LarsonScanners.LarsonScanner(self.led, color=colors.Blue)
+            self.process_cmd('Pattern=Scanner,Color=BLUE,Speed=MEDIUM')
         elif menu_selection == 8:
             # Rainbow Scanner
-            self.fps = 20
-            self.anim = LarsonScanners.LarsonRainbow(self.led)
+            self.process_cmd('Pattern=RainbowScanner,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 9:
             # Ping Pong
-            self.fps = 20
+            self.process_cmd('Pattern=PingPong,Color=BLUE,Speed=MEDIUM')
             #self.anim = PixelPingPong.PixelPingPong(self.led, color=colors.Blue)
-            self.anim = PixelPingPong.PixelPingPong(self.led, color=colors.Blue, total_pixels=4,fade_delay=4)
         elif menu_selection == 10:
             # Party Mode
-            self.fps = 10
-            self.anim = PartyMode.PartyMode(self.led, colors=PartyMode.rainbow)
+            self.process_cmd('Pattern=PartyMode,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 11:
             # Rainbow Halves
-            self.fps = 20
-            self.anim = HalvesRainbow.HalvesRainbow(self.led)
+            self.process_cmd('Pattern=RainbowHalves,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 12:
             # Rainbow
-            self.fps = 100
-            self.anim = Rainbows.Rainbow(self.led)
+            self.process_cmd('Pattern=Rainbow,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 13:
             # Rainbow Cycle
-            self.fps = 200
-            self.anim = Rainbows.RainbowCycle(self.led)
+            self.process_cmd('Pattern=RainbowCycle,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 14:
             # Linear Rainbow
-            self.fps = 50
-            self.anim = LinearRainbow.LinearRainbow(self.led, individual_pixel=True)
+            self.process_cmd('Pattern=LinearRainbow,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 15:
             # Search Lights
-            self.fps = 20
-            self.anim = Searchlights.Searchlights(self.led) 
+            self.process_cmd('Pattern=SearchLights,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 16:
             # Wave
-            self.fps = 5
-            self.anim = Wave.Wave(self.led, color=colors.Blue, cycles=5) 
+            self.process_cmd('Pattern=Wave,Color=BLUE,Speed=MEDIUM')
         elif menu_selection == 17:
             # Solid Red
             self.process_cmd('Pattern=Solid,Color=RED')
@@ -293,7 +283,7 @@ class Bling(object):
         elif menu_selection == 20:
             # Test Pattern
             # This animation is used to test the strip and the color order
-            self.anim = StripChannelTest(self.led)
+            self.process_cmd('Pattern=Test,Color=TEST,Speed=MEDIUM')
         elif menu_selection == 21:
             self.process_cmd('Pattern=Blinking,Color=PURPLE,Speed=SLOW,Segment=ALL')
             return
@@ -317,7 +307,6 @@ class Bling(object):
             raise ValueError
             result = 'ERROR'
 
-        self.run()
 
         return result
 
