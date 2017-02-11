@@ -57,7 +57,7 @@ color_map = {
     'RAINBOW': [colors.Red, colors.Orange, colors.Yellow, colors.Green, colors.Blue, colors.Purple],
 
     # insert all color maps above this line to keep the error colors last    
-    'ERROR': [colors.Red, colors.Green]
+    'ERROR': [colors.Red,]
     }
 
 #
