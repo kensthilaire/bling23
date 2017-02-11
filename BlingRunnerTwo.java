@@ -54,7 +54,13 @@ public class BlingRunnerTwo {
 				lights.send();
 			}
 			
-			else if(answer.equalsIgnoreCase("off"))
+			else if(answer.equalsIgnoreCase("e"))
+			{
+				lights.setPattern("fireflies", "teamcolors", "all", "medium", 0, 100);
+				lights.send();
+			}
+			
+			else if(answer.equalsIgnoreCase("off") || answer.equalsIgnoreCase("o"))
 			{
 				lights.disableLeds();
 				lights.send();
