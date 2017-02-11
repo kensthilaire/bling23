@@ -1,6 +1,12 @@
+import sys
 from bling import Bling
 
-bling = Bling(36)
+try:
+    num_leds = int(sys.argv[1])
+except:
+    num_leds = 36
+
+bling = Bling(num_leds)
 
 print bling.menu()
 
