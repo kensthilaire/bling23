@@ -151,7 +151,7 @@ class Bling(object):
             # process the command based on the provided parameters
             # first get the specified pattern
             print 'Getting Pattern: %s' % self.params['Pattern']
-            self.pattern = bling_patterns.get_pattern(self.params['Pattern'].title())
+            self.pattern = bling_patterns.get_pattern(self.params['Pattern'].upper())
             
             # process the segment parameter, getting the list of LEDs that will be
             # controlled by this command
@@ -170,6 +170,8 @@ class Bling(object):
             self.pattern.run()
 
             result = 'ERROR'
+
+        return result
 
  
     # TODO: Most of the following code will be removed once we complete the implementation of the pattern
@@ -215,98 +217,81 @@ class Bling(object):
 
         if menu_selection == 1:
             # Alternates
-            self.process_cmd('Pattern=Alternates,Color=TEAMCOLORS,Speed=MEDIUM,Segment=RIGHT')
-            return
+            result = self.process_cmd('Pattern=Alternates,Color=TEAMCOLORS,Speed=MEDIUM,Segment=ALL')
         elif menu_selection == 2:
             # Color Chase
-            self.process_cmd('Pattern=ColorChase,Color=GREEN,Speed=MEDIUM')
-            return
+            result = self.process_cmd('Pattern=ColorChase,Color=GREEN,Speed=MEDIUM')
         elif menu_selection == 3:
             # Color Fade
-            self.process_cmd('Pattern=ColorFade,Color=RAINBOW,Speed=MEDIUM')
-            return
+            result = self.process_cmd('Pattern=ColorFade,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 4:
             # Color Pattern
-            self.process_cmd('Pattern=ColorPattern,Color=RAINBOW,Speed=MEDIUM')
-            return
+            result = self.process_cmd('Pattern=ColorPattern,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 5:
             # Color Wipe
-            self.process_cmd('Pattern=ColorWipe,Color=GREEN,Speed=MEDIUM')
-            return
+            result = self.process_cmd('Pattern=ColorWipe,Color=GREEN,Speed=MEDIUM')
         elif menu_selection == 6:
             # Fire Flies
-            self.process_cmd('Pattern=FireFLies,Color=RAINBOW,Speed=MEDIUM')
-            return
+            result = self.process_cmd('Pattern=FireFLies,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 7:
             # Scanner
-            self.process_cmd('Pattern=Scanner,Color=BLUE,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=Scanner,Color=BLUE,Speed=MEDIUM')
         elif menu_selection == 8:
             # Rainbow Scanner
-            self.process_cmd('Pattern=RainbowScanner,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=RainbowScanner,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 9:
             # Ping Pong
-            self.process_cmd('Pattern=PingPong,Color=BLUE,Speed=MEDIUM')
-            #self.anim = PixelPingPong.PixelPingPong(self.led, color=colors.Blue)
+            result = self.process_cmd('Pattern=PingPong,Color=BLUE,Speed=MEDIUM')
         elif menu_selection == 10:
             # Party Mode
-            self.process_cmd('Pattern=PartyMode,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=PartyMode,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 11:
             # Rainbow Halves
-            self.process_cmd('Pattern=RainbowHalves,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=RainbowHalves,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 12:
             # Rainbow
-            self.process_cmd('Pattern=Rainbow,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=Rainbow,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 13:
             # Rainbow Cycle
-            self.process_cmd('Pattern=RainbowCycle,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=RainbowCycle,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 14:
             # Linear Rainbow
-            self.process_cmd('Pattern=LinearRainbow,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=LinearRainbow,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 15:
             # Search Lights
-            self.process_cmd('Pattern=SearchLights,Color=RAINBOW,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=SearchLights,Color=RAINBOW,Speed=MEDIUM')
         elif menu_selection == 16:
             # Wave
-            self.process_cmd('Pattern=Wave,Color=BLUE,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=Wave,Color=BLUE,Speed=MEDIUM')
         elif menu_selection == 17:
             # Solid Red
-            self.process_cmd('Pattern=Solid,Color=RED')
-            return
+            result = self.process_cmd('Pattern=Solid,Color=RED')
         elif menu_selection == 18:
             # Solid Yellow
-            self.process_cmd('Pattern=Solid,Color=YELLOW')
-            return
+            result = self.process_cmd('Pattern=Solid,Color=YELLOW')
         elif menu_selection == 19:
             # Solid Green
-            self.process_cmd('Pattern=Solid,Color=GREEN')
-            return
+            result = self.process_cmd('Pattern=Solid,Color=GREEN')
         elif menu_selection == 20:
             # Test Pattern
             # This animation is used to test the strip and the color order
-            self.process_cmd('Pattern=Test,Color=TEST,Speed=MEDIUM')
+            result = self.process_cmd('Pattern=Test,Color=TEST,Speed=MEDIUM')
         elif menu_selection == 21:
-            self.process_cmd('Pattern=Blinking,Color=PURPLE,Speed=SLOW,Segment=ALL')
-            return
+            result = self.process_cmd('Pattern=Blinking,Color=PURPLE,Speed=SLOW,Segment=ALL')
         elif menu_selection == 22:
-            self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=ALL')
-            return
+            result = self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=ALL')
         elif menu_selection == 23:
-            self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=FAST,Segment=ALL')
-            return
+            result = self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=FAST,Segment=ALL')
         elif menu_selection == 24:
-            self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=LEFT')
-            return
+            result = self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=LEFT')
         elif menu_selection == 25:
-            self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=RIGHT')
-            return
+            result = self.process_cmd('Pattern=Blinking,Color=GREEN,Speed=MEDIUM,Segment=RIGHT')
         elif menu_selection == 99:
             # All off
-            self.animate = False
-            self.led.all_off()
+            result = self.process_cmd('Pattern=OFF')
         else:
             raise ValueError
             result = 'ERROR'
-
 
         return result
 
@@ -324,4 +309,3 @@ class Bling(object):
             self.led.update()
 
            
-        

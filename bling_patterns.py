@@ -164,7 +164,7 @@ class ColorFadePattern(BlingPatternBase):
         
 class ColorPattern(BlingPatternBase):
     def __init__(self):
-        super(ColorPatternPattern,self).__init__('ColorPattern', animated=True)
+        super(ColorPattern,self).__init__('ColorPattern', animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
@@ -361,32 +361,27 @@ def get_pattern( pattern_str ):
     return patterns[pattern_str]
 
 patterns = {
-    'Solid': SolidPattern(),
-    'Blinking': BlinkingPattern(),
-<<<<<<< HEAD
-    'Alternates': AlternatesPattern(),
-    'ColorChase': ColorChasePattern(),
-    'ColorFade': ColorFadePattern (),
-    'ColorPattern': Colorpattern(),
-    'ColorWipe': ColorWipePattern(),
-    'FireFlies': FireFliesPattern(),
-    'Scanner': ScannerPattern(),
-    'RainbowScanner': RainbowScannerPattern(),
-    'PingPong': PingPongPattern(),
-    'PartyMode': PartyModePattern(),
-    'RainbowHalves': RainbowHalvesPattern(),
-    'Rainbow': RainbowPattern(),
-    'RainbowCycle': RainbowCyclePattern(),
-    'LinearRainbow': LinearRainbowPattern(),
-    'SearchLights': SearchLightsPattern(),
-    'Wave': WavePattern(),
-=======
+    'SOLID': SolidPattern(),
+    'BLINKING': BlinkingPattern(),
+    'ALTERNATES': AlternatesPattern(),
+    'COLORCHASE': ColorChasePattern(),
+    'COLORFADE': ColorFadePattern (),
+    'COLORPATTERN': ColorPattern(),
+    'COLORWIPE': ColorWipePattern(),
+    'FIREFLIES': FireFliesPattern(),
+    'SCANNER': ScannerPattern(),
+    'RAINBOWSCANNER': RainbowScannerPattern(),
+    'PINGPONG': PingPongPattern(),
+    'PARTYMODE': PartyModePattern(),
+    'RAINBOWHALVES': RainbowHalvesPattern(),
+    'RAINBOW': RainbowPattern(),
+    'RAINBOWCYCLE': RainbowCyclePattern(),
+    'LINEARRAINBOW': LinearRainbowPattern(),
+    'SEARCHLIGHTS': SearchLightsPattern(),
+    'WAVE': WavePattern(),
     
-    'Wave': WavePattern(),
-
->>>>>>> origin/master
-    'Test': TestPattern(),
-    'Error': ErrorPattern()
+    'TEST': TestPattern(),
+    'ERROR': ErrorPattern()
     }
 
 
