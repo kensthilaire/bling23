@@ -270,7 +270,7 @@ class RainbowCyclePattern(BlingPatternBase):
         self.set_fps(speed_str)
         # The Rainbow pattern doesn't let us set the colors...
         colors = bling_colors.get_colors(color_str)
-        self.animation = Rainbows.RainbowCycle(led, start=min_led, end=max_led)
+        self.animation = RainbowCycle.RainbowCycle(led, start=min_led, end=max_led)
         
 class LinearRainbowPattern(BlingPatternBase):
     def __init__(self):
