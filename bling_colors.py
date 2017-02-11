@@ -55,10 +55,11 @@ color_map = {
     'PINKY': [ colors.Pink, colors.HotPink, colors.Salmon, colors.LightPink, colors.DeepPink, colors.Coral],
     'TEAMCOLORS' : [ colors.Blue, colors.Orange ],
     'RAINBOW': [colors.Red, colors.Orange, colors.Yellow, colors.Green, colors.Blue, colors.Purple],
-
+    'CHRISTMAS': [colors.Red, colors.Green],
+    
     # insert all color maps above this line to keep the error colors last    
     'ERROR': [colors.Red,]
-    'CHRISTMAS': [colors.Red, colors.Green]
+    
     }
 
 #
