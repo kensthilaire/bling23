@@ -134,7 +134,7 @@ class AlternatesPattern(BlingPatternBase):
         self.led = led
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = Christmas.Christmas(led, max_led=max_led, color1=colors[0],color2=colors[1])
+        self.animation = Alternates.Alternates(led, max_led=max_led, color1=colors[0],color2=colors[1])
         
 class ColorChasePattern(BlingPatternBase):
     def __init__(self):
