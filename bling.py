@@ -4,26 +4,6 @@ from bibliopixel import LEDStrip
 
 import bling_patterns
 
-# TODO: Remove all these imports once we convert this module to use the bling patterns
-# rather than the direct calls to the BiblioPixel animation objects
-import bibliopixel.colors as colors
-from bibliopixel.animation import StripChannelTest
-
-from BiblioPixelAnimations.strip import Alternates
-from BiblioPixelAnimations.strip import Rainbows
-from BiblioPixelAnimations.strip import ColorChase
-from BiblioPixelAnimations.strip import ColorFade
-from BiblioPixelAnimations.strip import ColorPattern
-from BiblioPixelAnimations.strip import ColorWipe
-from BiblioPixelAnimations.strip import FireFlies
-from BiblioPixelAnimations.strip import HalvesRainbow
-from BiblioPixelAnimations.strip import LarsonScanners
-from BiblioPixelAnimations.strip import LinearRainbow
-from BiblioPixelAnimations.strip import PartyMode
-from BiblioPixelAnimations.strip import PixelPingPong
-from BiblioPixelAnimations.strip import Searchlights
-from BiblioPixelAnimations.strip import Wave
-
 class Bling(object):
 
     def __init__(self, num_leds):
@@ -121,8 +101,6 @@ class Bling(object):
         if max_param is not 100:
             max_adjust = int((float(led_range)*(100-max_param)/100)+1)
             leds[1] -= max_adjust
-        print 'Min:%d, Max:%d, MinAdjust:%d, MaxAdjust:%d' % (min_param,max_param,min_adjust,max_adjust)
-        print 'Adjusted Min:%d, Max:%d' % (leds[0],leds[1])
         return leds
     
     def process_cmd(self, cmd_str):
@@ -141,7 +119,6 @@ class Bling(object):
             for param in cmd_params:
                 name,value=param.split('=')
                 self.params[name.title()] = value.upper()
-                print 'Setting param: %s to: %s' % (name,self.params[name.title()])
     
             if self.params['Pattern'] == 'OFF':
                 # if the patter is OFF, then simply return. we have already turned off
@@ -150,14 +127,12 @@ class Bling(object):
 
             # process the command based on the provided parameters
             # first get the specified pattern
-            print 'Getting Pattern: %s' % self.params['Pattern']
             self.pattern = bling_patterns.get_pattern(self.params['Pattern'].upper())
             
             # process the segment parameter, getting the list of LEDs that will be
             # controlled by this command
             leds = self.get_leds_from_segment( self.params['Segment'])
             leds = self.apply_min_max_params( leds )
-            print 'LED Range: %d-%d' % (leds[0], leds[1])
             
             self.pattern.setup( self.led, self.params['Color'], self.params['Speed'], leds[0], leds[1] )
             self.pattern.run()
