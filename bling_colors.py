@@ -58,6 +58,7 @@ color_map = {
 
     # insert all color maps above this line to keep the error colors last    
     'ERROR': [colors.Red,]
+    'CHRISTMAS': [colors.Red, colors.Green]
     }
 
 #
