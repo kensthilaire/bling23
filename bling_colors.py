@@ -56,7 +56,7 @@ color_map = {
     'TEAMCOLORS' : [ colors.Blue, colors.Orange ],
     'RAINBOW': [colors.Red, colors.Orange, colors.Yellow, colors.Green, colors.Blue, colors.Purple],
     'CHRISTMAS': [colors.Red, colors.Green],
-    'BROWN': [colors.Green, colors.Gold],
+    'BROWN': [colors.Blue, colors.Orange, colors.Purple],
     # insert all color maps above this line to keep the error colors last    
     'ERROR': [colors.Red,]
     
