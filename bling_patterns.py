@@ -229,7 +229,7 @@ class PingPongPattern(BlingPatternBase):
 class PartyModePattern(BlingPatternBase):
     def __init__(self):
         super(PartyModePattern,self).__init__('PartyMode', animated=True)
-        self.speed_params = { 'SLOW': 5, 'MEDIUM': 12, 'FAST':30 }
+        self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':30 }
         
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1):
         self.led = led
