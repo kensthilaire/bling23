@@ -38,11 +38,61 @@ public class Bling
 	public void disableLeds()
 	{
 		put = "Pattern=" + "off" + "," + "Color=" + color + "," + "Segment=" + segment + "," + "Speed=" + speed + "," + "Min=" + min + "," + "Max=" + max; 
-		//return put;
 	}
 	
 	public void send()
 	{
 		newtable.putString("command", put);
 	}
+
+	public void sendClimbingPattern()
+	{
+		setPattern("ColorFade", "teamcolors", "all", "fast", 0, 100);
+		send();
+	}
+
+	public void sendFinishedPattern()
+	{
+		setPattern("RainbowHalves", "red", "all", "fast", 0, 100);
+		send();
+	}
+			
+	public void sendFinishedClimbingPattern()
+	{
+	    setPattern("colorPattern", "teamcolors", "all", "medium", 0, 100);
+		send();
+	}
+			
+	public void sendLeftTurningPattern()
+	{
+		setPattern("ColorWipe", "green", "left", "fast", 0, 100);
+	    send();
+	}
+			
+	public void sendRightTurningPattern()
+	{
+		setPattern("ColorWipe", "green", "right", "fast", 0, 100);
+		send();
+	}
+	public void sendDrivePattern
+	{
+		setPattern("solid", "blue", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendBackupPattern	
+	{
+		setPattern("blinking", "yellow", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendEndPattern	
+	{
+		setPattern("fireflies", "rainbow", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendOffPattern	
+	{
+		disableLeds();
+		send();
+	}
+
 }
