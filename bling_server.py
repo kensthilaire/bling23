@@ -50,6 +50,10 @@ NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
 bling_table = NetworkTables.getTable('Bling')
 bling_table.addTableListener(valueChanged)
 
+# start things off with a base pattern to indicate that the bling application is
+# running
+bling_server.process_cmd('Pattern=ColorWipe,Color=YELLOW,Speed=MEDIUM')
+
 done = False
 while not done:
     try:
