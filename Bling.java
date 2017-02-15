@@ -45,51 +45,60 @@ public class Bling
 		newtable.putString("command", put);
 	}
 
-	public void sendClimbingPattern()
+    /** Set of API functions that can be called from the robot code to send and
+        pattern to the bling **/
+
+    public void sendRobotInit()
+    {
+		setPattern("RainbowHalves", "red", "all", "medium", 0, 100);
+		send();
+    }
+
+	public void sendClimbing()
 	{
 		setPattern("ColorFade", "teamcolors", "all", "fast", 0, 100);
 		send();
 	}
 
-	public void sendFinishedPattern()
+	public void sendFinished()
 	{
 		setPattern("RainbowHalves", "red", "all", "fast", 0, 100);
 		send();
 	}
 			
-	public void sendFinishedClimbingPattern()
+	public void sendFinishedClimbing()
 	{
 	    setPattern("colorPattern", "teamcolors", "all", "medium", 0, 100);
 		send();
 	}
 			
-	public void sendLeftTurningPattern()
+	public void sendLeftTurning()
 	{
 		setPattern("ColorWipe", "green", "left", "fast", 0, 100);
 	    send();
 	}
 			
-	public void sendRightTurningPattern()
+	public void sendRightTurning()
 	{
 		setPattern("ColorWipe", "green", "right", "fast", 0, 100);
 		send();
 	}
-	public void sendDrivePattern
+	public void sendDrive()
 	{
 		setPattern("solid", "blue", "all", "medium", 0, 100);
 		send();
 	}
-	public void sendBackupPattern	
+	public void sendBackup()
 	{
 		setPattern("blinking", "yellow", "all", "medium", 0, 100);
 		send();
 	}
-	public void sendEndPattern	
+	public void sendEnd()
 	{
 		setPattern("fireflies", "rainbow", "all", "medium", 0, 100);
 		send();
 	}
-	public void sendOffPattern	
+	public void sendOff()
 	{
 		disableLeds();
 		send();
