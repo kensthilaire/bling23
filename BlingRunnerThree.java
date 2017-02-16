@@ -14,47 +14,47 @@ public class BlingRunnerTwo {
 			
 			if(answer.equalsIgnoreCase("c"))
 			{
-				lights.sendClimbingPattern();
+				lights.sendClimbing();
 			}
 			
 			else if(answer.equalsIgnoreCase("f"))
 			{
-				lights.sendFinishedPattern();
+				lights.sendFinished();
 			}
 			
 			else if(answer.equalsIgnoreCase("fc"))
 			{
-				lights.sendFinishedClimbingPattern();
+				lights.sendFinishedClimbing();
 			}
 			
 			else if(answer.equalsIgnoreCase("l"))
 			{
-				lights.sendLeftTurningPattern();
+				lights.sendLeftTurning();
 			}
 			
 			else if(answer.equalsIgnoreCase("r"))
 			{
-				lights.sendRightTurningPattern();
+				lights.sendRightTurning();
 			}
 			
 			else if(answer.equalsIgnoreCase("d"))
 			{
-				lights.sendDrivePattern();
+				lights.sendDrive();
 			}
 			
 			else if(answer.equalsIgnoreCase("b"))
 			{
-				lights.sendBackupPattern();
+				lights.sendBackup();
 			}
 			
 			else if(answer.equalsIgnoreCase("e"))
 			{
-				lights.sendEndPattern();
+				lights.sendEnd();
 			}
 			
 			else if(answer.equalsIgnoreCase("off") || answer.equalsIgnoreCase("o"))
 			{
-				lights.sendOffPattern();
+				lights.sendOff();
 			}
 			
 			else if(answer.equalsIgnoreCase("done") || answer.equalsIgnoreCase("q"))

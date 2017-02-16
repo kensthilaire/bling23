@@ -103,5 +103,42 @@ public class Bling
 		disableLeds();
 		send();
 	}
+	public void sendRobotInit()
+	{
+		setPattern("rainbowHalves", "rainbow", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendAutoDrive()
+	{
+		setPattern("wave", "green", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendAutoTurnRight()
+	{
+		setPattern("blinking", "Green", "right", "medium", 0, 100);
+		send();
+	}
+	public void sendAutoTurnLeft()
+	{
+		setPattern("blinking", "Green", "left", "medium", 0, 100);
+		send();
+	}
+	public void sendPegTargeting()
+	{
+		setPattern("scanner", "Green", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendBoilerTargeting()
+	{
+		setPattern("scanner", "Yellow", "all", "medium", 0, 100);
+		send();
+	}
+	public void sendFuelLaunchReady()
+	{
+		setPattern("solid", "Green", "all", "medium", 0, 100);
+		send();
+	}
+	
+	
 
 }
