@@ -1,0 +1,44 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          bling
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:
+# X-Start-Before:    rmnologin
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Provide limited super user privileges to specific users
+# Description: Provide limited super user privileges to specific users.
+### END INIT INFO
+#
+# Setup steps:
+#	1. in /etc/init.d run:  ln -s /home/pi/GitHub/bling17/startup/bling
+#	2. sudo insserv bling
+#	3. sudo systemctl enable bling
+#	4. sudo systemctl start bling
+#
+# To Start/Stop the app
+#	sudo systemctl start bling
+#
+#	sudo systemctl stop bling
+##########################################################
+#
+
+. /lib/lsb/init-functions
+
+set -e
+
+case "$1" in
+  start)
+        python /home/pi/GitHub/bling17/bling_server.py -i 10.10.73.2 -l 20 -s 4&
+	;;
+  stop|reload|restart|force-reload|status)
+	kill `ps -def | grep bling_server | grep python | awk '{print $2}'`
+	;;
+  *)
+	echo "Usage: $N {start|stop|restart|force-reload|status}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
