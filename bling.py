@@ -6,16 +6,25 @@ import bling_patterns
 
 class Bling(object):
 
-    def __init__(self, num_leds):
+    def __init__(self, num_leds, num_segments=None):
         # set the total number of LEDs in the strip
         self.num_leds = num_leds
+        self.num_segments = num_segments
         
-        # initialize the list of segments to include all, left and right
-        # these segment settings can be overwritten dynamically if we want to define
-        # additional segments, like all, left, right, front, back, etc...
-        self.segments = { 'ALL':   ( 0, self.num_leds ),
-                          'LEFT':  ( 0, int((self.num_leds/2)-1) ),
-                          'RIGHT': ( int(self.num_leds/2), int(self.num_leds) ) }
+        # initialize the list of segment overrides to include all, left and right.
+        # This segment list is used to override other segment control based on
+        # the bling command itself. For example, we may want to apply a pattern to either
+        # the left or right side of the robot.
+        led_half = int((self.num_leds/2))
+        led_quarter = int((self.num_leds/4))
+        self.segments = { 'ALL':          ( 0, self.num_leds ),
+                          'LEFT':         ( 0, led_half-1 ),
+                          'RIGHT':        ( led_half, int(self.num_leds) ),
+                          'RIGHT_FRONT':  ( 0, (led_quarter-1) ),
+                          'RIGHT_REAR':   ( led_quarter, (led_quarter+led_quarter-1) ),
+                          'LEFT_REAR':    ( (led_quarter*2), ((led_quarter*2)+led_quarter-1) ),
+                          'LEFT_FRONT':   ( (led_quarter*3), ((led_quarter*3)+led_quarter-1) )
+                        }
 
         # initialize the driver with the type and count of LEDs that we are using
         # also, define the correct RGB channel order once you have run the test pattern
@@ -39,6 +48,8 @@ class Bling(object):
         self.params = {}
         self.init_params()
         
+        self.bling_patterns = bling_patterns.BlingPatterns(self)
+
         ###### TODO: remove these variables after converting the menu processing to use #####
         ######       the new patterns                                                   #####
         # animation object containing pattern to apply to the LEDs
@@ -48,9 +59,21 @@ class Bling(object):
         # of LEDs does not require animation
         self.animate = True
 
-    def num_leds(self):
+    def get_num_leds(self):
         return self.num_leds
 
+    def get_num_segments(self):
+        return self.num_segments
+
+    def get_segment_size(self):
+        return int(self.num_leds/self.num_segments)
+
+    def get_segment_min_max_led( self, num_segments, segment_index ):
+        segment_leds = int(self.num_leds/num_segments)
+        min_led = segment_leds*segment_index
+        max_led = min_led+segment_leds-1
+        return min_led,max_led
+        
     def stop_animation(self):
         if self.pattern is not None:
             self.pattern.stop()
@@ -127,20 +150,20 @@ class Bling(object):
 
             # process the command based on the provided parameters
             # first get the specified pattern
-            self.pattern = bling_patterns.get_pattern(self.params['Pattern'].upper())
+            self.pattern = self.bling_patterns.get_pattern(self.params['Pattern'].upper())
             
             # process the segment parameter, getting the list of LEDs that will be
             # controlled by this command
             leds = self.get_leds_from_segment( self.params['Segment'])
             leds = self.apply_min_max_params( leds )
             
-            self.pattern.setup( self.led, self.params['Color'], self.params['Speed'], leds[0], leds[1] )
+            self.pattern.setup( self.led, self.params['Color'], self.params['Speed'], leds[0], leds[1], self.num_segments )
             self.pattern.run()
         except:
             raise
             # catch any thrown exceptions and generate the error pattern
             print 'Error processing command: %s' % cmd_str
-            self.pattern = bling_patterns.get_pattern('Error')
+            self.pattern = self.bling_patterns.get_pattern('Error')
             self.pattern.setup(self.led, 'RED')
             self.pattern.run()
 
@@ -160,7 +183,7 @@ class Bling(object):
         menu_str += '(15) Search Lights (colors moving up/down)\n'
         menu_str += '(3)  Color Fade (one color fading in/out)       '
         menu_str += '(16) Wave (colors moving up/down)\n'
-        menu_str += '(4)  Color Pattern ()                           '
+        menu_str += '(4)  Color Pattern (mix of colors)              '
         menu_str += '(17) Solid Red (one color on all LEDs)\n'
         menu_str += '(5)  Color Wipe (one color moving up/down)      '
         menu_str += '(18) Solid Yellow (one color on all LEDs)\n'
@@ -188,7 +211,6 @@ class Bling(object):
 
     def menu_select( self, menu_selection ):
         result = 'OK'
-        self.animate = True
 
         if menu_selection == 1:
             # Alternates
@@ -270,17 +292,3 @@ class Bling(object):
 
         return result
 
-    def run(self):
-        try:
-            if self.animate is True:
-                #run the animation
-                self.anim.run(fps=self.fps, threaded=True)
-            else:
-                # no animation, just update the LEDs
-                self.led.update()
-        except KeyboardInterrupt:
-            #Ctrl+C will exit the animation and turn the LEDs offs
-            self.led.all_off()
-            self.led.update()
-
-           

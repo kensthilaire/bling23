@@ -1,12 +1,27 @@
 import sys
 from bling import Bling
+from optparse import OptionParser
 
-try:
-    num_leds = int(sys.argv[1])
-except:
-    num_leds = 36
 
-bling = Bling(num_leds)
+# command line options handling
+parser = OptionParser()
+
+parser.add_option(
+    "-l","--num_leds",dest="num_leds", default='48',
+    help='Total number of LEDs in the strip')
+parser.add_option(
+    "-s","--num_segments",dest="num_segments", default=None,
+    help='Number of LED segments in the strip')
+
+# Parse the command line arguments
+(options,args) = parser.parse_args()
+
+if options.num_segments is not None:
+    num_segments = int(options.num_segments)
+else:
+    num_segments = None
+
+bling = Bling(int(options.num_leds), num_segments)
 
 print bling.menu()
 
