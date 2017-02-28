@@ -24,11 +24,14 @@ parser.add_option(
     "-i","--ipaddress",dest="ipaddress", default='10.10.73.2', 
     help='IP Address of the network tables server')
 parser.add_option(
-    "-l","--num_leds",dest="num_leds", default='48', 
+    "-l","--leds",dest="leds", default='48', 
     help='Total number of LEDs in the strip')
 parser.add_option(
-    "-s","--num_segments",dest="num_segments", default=None, 
+    "-s","--segments",dest="segments", default=None, 
     help='Number of LED segments in the strip')
+parser.add_option(
+    "-b","--brightness",dest="brightness", default='255', 
+    help='Overall brightness of the LEDs from 0-255, with 255 being the brightest')
 
 # Parse the command line arguments
 (options,args) = parser.parse_args()
@@ -37,12 +40,15 @@ parser.add_option(
 # for now, we will assume that we have a left and a right segment, with half
 # the LEDs on the left and half on the right. we can change this if we come up
 # with more segments (e.g. front/back/left/right)
-if options.num_segments is not None:
-    num_segments = int(options.num_segments)
+if options.segments is not None:
+    num_segments = int(options.segments)
 else:
     num_segments = None
 
-bling_server = bling.Bling(int(options.num_leds), num_segments)
+try:
+    bling_server = bling.Bling(int(options.leds), num_segments, int(options.brightness))
+except ValueError:
+    sys.exit('ERROR: Invalid Brightness Level: %s, must be 0-255' % options.brightness)
 
 # initialize the network tables and connect to the specified server
 NetworkTables.initialize(server=options.ipaddress)

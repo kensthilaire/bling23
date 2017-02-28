@@ -6,10 +6,11 @@ import bling_patterns
 
 class Bling(object):
 
-    def __init__(self, num_leds, num_segments=None):
+    def __init__(self, num_leds, num_segments=None, brightness=255):
         # set the total number of LEDs in the strip
         self.num_leds = num_leds
         self.num_segments = num_segments
+        self.brightness = brightness
         
         # initialize the list of segment overrides to include all, left and right.
         # This segment list is used to override other segment control based on
@@ -34,7 +35,7 @@ class Bling(object):
 
         # we are using the LED strip configuration, other available configurations include an LED matrix,
         # but we have only a single strip at this time
-        self.led = LEDStrip(self.driver)
+        self.led = LEDStrip(self.driver, threadedUpdate=True, masterBrightness=self.brightness)
 
         # the frames per second is used to control how fast the animation runs. some of the animations
         # work better when run at a low frames per second
@@ -74,7 +75,14 @@ class Bling(object):
         max_led = min_led+segment_leds-1
         return min_led,max_led
         
+    def set_brightness(self, level):
+        self.led.setMasterBrightness(level)
+        self.brightness = level
+
     def stop_animation(self):
+        # reset the brightness level back to the default value that was set upon initialization
+        self.led.setMasterBrightness(self.brightness)
+
         if self.pattern is not None:
             self.pattern.stop()
         else:
@@ -102,6 +110,7 @@ class Bling(object):
         self.params['Speed'] = 'Medium'
         self.params['Min'] = '0'
         self.params['Max'] = '100'
+        self.params['Brightness'] = str(self.brightness)
 
     def apply_min_max_params(self, leds):
         # Re-calculate the minimum and maximum LED values by applying any
@@ -156,9 +165,21 @@ class Bling(object):
             # controlled by this command
             leds = self.get_leds_from_segment( self.params['Segment'])
             leds = self.apply_min_max_params( leds )
-            
+
+            # if the pattern specifies a brightness level, then update the level for the entire strip
+            try:
+                brightness = int(self.params['Brightness'])
+                self.led.setMasterBrightness(brightness)
+            except ValueError:
+                print 'Invalid Brightness Value: %d' % brightness
+            except KeyError:
+                pass
+
             self.pattern.setup( self.led, self.params['Color'], self.params['Speed'], leds[0], leds[1], self.num_segments )
+
+            # run the configured pattern
             self.pattern.run()
+    
         except:
             raise
             # catch any thrown exceptions and generate the error pattern
