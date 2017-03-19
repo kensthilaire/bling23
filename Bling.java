@@ -93,7 +93,7 @@ public class Bling
 		setPattern("blinking", "yellow", "all", "medium", 0, 100);
 		send();
 	}
-	public void sendEnd()
+	public void sendEndgame()
 	{
 		setPattern("fireflies", "rainbow", "all", "medium", 0, 100);
 		send();
