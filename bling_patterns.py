@@ -323,6 +323,8 @@ class AlternatesPattern(BlingPatternBase):
         self.led = led
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
+        if len(colors) < 2:
+            colors.extend(bling_colors.get_colors('YELLOW'))
         self.animation = Alternates.Alternates(led, max_led=max_led, color1=colors[0],color2=colors[1])
         
 class ColorChasePattern(BlingPatternBase):
