@@ -313,3 +313,39 @@ class Bling(object):
 
         return result
 
+#
+# global bling server instance used when running the bling service as a singleton
+#
+bling_server = None
+
+#
+# Utility function to retrieve the global bling server instance
+#
+def get_bling_server():
+    return bling_server
+
+#
+# Utility function to create the single global instance of the bling server
+#
+def create_bling_server(num_leds, num_segments=None, brightness=255):
+    global bling_server
+    try:
+        if bling_server is not None:
+            sys.exit('ERROR: Bling server already created')
+
+        bling_server = Bling(num_leds, num_segments, brightness)
+    except ValueError:
+        sys.exit('ERROR: Invalid Brightness Level: %s, must be 0-255' % brightness)
+
+#
+# Utility function to process a bling command string by the global bling server
+#
+def process_cmd(cmd_str):
+    bling_server.process_cmd(cmd_str)
+
+#
+# Utility function to cancel an active bling animation sequence by the global bling server
+#
+def stop_animation():
+    bling_server.stop_animation()
+
