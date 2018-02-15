@@ -23,6 +23,8 @@
 #	sudo systemctl stop bling
 ##########################################################
 #
+#    python /home/pi/GitHub/bling17/bling_server.py -i 10.10.73.2 -s 4 -b 200&
+#	kill `ps -def | grep bling_server | grep python | awk '{print $2}'`
 
 . /lib/lsb/init-functions
 
@@ -30,10 +32,10 @@ set -e
 
 case "$1" in
   start)
-        python /home/pi/GitHub/bling17/bling_server.py -i 10.10.73.2 -s 4&
+    cd /home/pi/GitHub/bling17; python bling_webapp.py -l 36 -s 2 &
 	;;
   stop|reload|restart|force-reload|status)
-	kill `ps -def | grep bling_server | grep python | awk '{print $2}'`
+	kill `ps -def | grep bling_webapp | grep python | awk '{print $2}'`
 	;;
   *)
 	echo "Usage: $N {start|stop|restart|force-reload|status}" >&2

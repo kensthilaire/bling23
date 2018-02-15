@@ -67,7 +67,8 @@ bling_table.addTableListener(valueChanged)
 
 # start things off with a base pattern to indicate that the bling application is
 # running
-bling_server.process_cmd('Pattern=ColorWipe,Color=YELLOW,Speed=MEDIUM')
+#bling_server.process_cmd('Pattern=ColorWipe,Color=YELLOW,Speed=MEDIUM')
+bling_server.process_cmd('Pattern=RainbowHalves,Color=Rainbow,Speed=MEDIUM')
 
 done = False
 while not done:

@@ -20,20 +20,20 @@ current_color = 'RAINBOW'
 current_speed = speed_opts[1]
 
 urls = (
-    '/', 'index',
+    '/', 'Index',
 
-    '/stop',        'stop',
-    '/pattern',     'pattern',
-    '/colors',      'colors',
-    '/patterns',    'patterns',
-    '/speeds',      'speeds'
+    '/stop',        'Stop',
+    '/pattern',     'Pattern',
+    '/colors',      'Colors',
+    '/patterns',    'Patterns',
+    '/speeds',      'Speeds'
 )
 
-class index:
+class Index:
     def GET(self):
         return render_page( 'main' )
 
-class pattern:
+class Pattern:
     def GET(self):
         bling_pattern = { 'pattern':current_pattern, 'color':current_color, 'speed':current_speed }
         return json.dumps( bling_pattern )
@@ -41,21 +41,21 @@ class pattern:
         params = web.input()
         set_bling_pattern( pattern=params.pattern, color=params.color, speed=params.speed )
 
-class stop:
+class Stop:
     def POST(self):
         bling.stop_animation()
 
-class patterns:
+class Patterns:
     def GET(self):
         pattern_dict = bling_patterns.BlingPatterns(bling.get_bling_server()).patterns
         return json.dumps( pattern_dict.keys() )
 
-class colors:
+class Colors:
     def GET(self):
         color_dict = bling_colors.color_map
         return json.dumps( color_dict.keys() )
 
-class speeds:
+class Speeds:
     def GET(self):
         return json.dumps( speed_opts )
 
@@ -64,11 +64,8 @@ class speeds:
 # file prefix
 def render_page( html_file_prefix ):
     filename = './html/%s.html' % html_file_prefix
-    try:
-        fd = open( filename, 'r' )
-        file_content = fd.read()
-    except:
-        file_content = None
+    fd = open( filename, 'r' )
+    file_content = fd.read()
 
     return file_content
 
