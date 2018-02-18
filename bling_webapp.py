@@ -91,6 +91,14 @@ def set_bling_pattern( pattern=None, color=None, speed=None ):
 
     bling.process_cmd('Pattern=%s,Color=%s,Speed=%s' % (pattern,color,speed))
 
+#
+# define the network table connection and bling table value listener
+#
+def network_table_connection_listener(connected, info):
+    print(info, '; Connected=%s' % connected)
+
+def network_table_value_listener(table, key, value, isNew):
+    bling.process_cmd(value)
 
 
 if __name__ == "__main__":
@@ -139,6 +147,15 @@ if __name__ == "__main__":
     # running
     set_bling_pattern()
 
+    # initialize the network tables and connect to the specified server
+    NetworkTables.initialize(server=options.ipaddress)
+    NetworkTables.addConnectionListener(network_table_connection_listener, immediateNotify=True)
+
+    # and create the bling table instance and install the table listener
+    bling_table = NetworkTables.getTable('Bling')
+    bling_table.addTableListener(network_table_value_listener)
+
+    # and launch the web server
     app = web.application(urls, globals())
     app.run()
 
