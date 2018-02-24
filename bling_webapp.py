@@ -3,11 +3,14 @@
 # arguments, and sets up the web application.
 #
 
+import os
 import sys
 import time
 import web
 import json
+from networktables import NetworkTables
 from optparse import OptionParser
+from threading import Thread, Event
 
 import bling
 import bling_patterns
@@ -98,8 +101,43 @@ def network_table_connection_listener(connected, info):
     print(info, '; Connected=%s' % connected)
 
 def network_table_value_listener(table, key, value, isNew):
+
+    # mark that we have received a command from the network tables
+    if network_table_cmd_check is not None:
+        network_table_cmd_check.cmd_received()
+
     bling.process_cmd(value)
 
+class NetworkTableCmdRcvdCheck(Thread):
+    def __init__(self, event):
+        Thread.__init__(self)
+        self.stop_flag = event
+        self.cmd_received = False
+        self.is_finished = False
+
+    def run(self):
+        counter = 0
+        while not self.stop_flag.wait(1.0) and self.is_finished is False:
+            counter += 1
+            if counter == 30 and self.cmd_received is False:
+                # timeout waiting to receive an initial command through
+                # the network tables
+                print 'Timeout waiting for Network Table commands...'
+                self.is_finished = True
+                set_bling_pattern( pattern='BLINKING', color='RED', speed='FAST' )
+
+                os.system('sudo shutdown -r now')
+                
+    def cmd_received(self):
+        # cancel the timer and mark the command as being received
+        self.is_finished = True
+        self.cmd_received = True
+
+    def cancel(self):
+        print 'Canceling network table cmd check...'
+        self.is_finished = True
+
+network_table_cmd_check = None
 
 if __name__ == "__main__":
 
@@ -122,6 +160,9 @@ if __name__ == "__main__":
     parser.add_option(
         "-b","--brightness",dest="brightness", default='255', 
         help='Overall brightness of the LEDs from 0-255, with 255 being the brightest')
+    parser.add_option(
+        "-n","--ntcheck",dest="ntcheck", action="store_true", default=False, 
+        help='Enable the Network Table command check')
 
     # Parse the command line arguments
     (options,args) = parser.parse_args()
@@ -155,9 +196,19 @@ if __name__ == "__main__":
     bling_table = NetworkTables.getTable('Bling')
     bling_table.addTableListener(network_table_value_listener)
 
+    # start the thread which will check for commands being received from the network tables
+    if options.ntcheck:
+        network_table_event = Event()
+        network_table_cmd_check = NetworkTableCmdRcvdCheck(network_table_event)
+        network_table_cmd_check.start()
+
     # and launch the web server
     app = web.application(urls, globals())
     app.run()
 
     bling.stop_animation()
+
+    if network_table_cmd_check is not None:
+        network_table_cmd_check.cancel()
+        network_table_cmd_check.join()
 
