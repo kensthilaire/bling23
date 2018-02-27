@@ -125,7 +125,9 @@ class NetworkTableCmdRcvdCheck(Thread):
                 print 'Timeout waiting for Network Table commands...'
                 self.is_finished = True
                 set_bling_pattern( pattern='BLINKING', color='RED', speed='FAST' )
-
+                
+                print 'Delaying a bit to allow things to settle'
+                time.sleep(2)
                 os.system('sudo shutdown -r now')
                 
     def cmd_received(self):
