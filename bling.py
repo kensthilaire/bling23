@@ -1,6 +1,7 @@
 
-from bibliopixel.drivers.LPD8806 import *
-from bibliopixel import LEDStrip
+from bibliopixel.drivers.SPI.LPD8806 import *
+from bibliopixel import Strip
+from bibliopixel.drivers.spi_interfaces import SPI_INTERFACES
 
 import bling_patterns
 
@@ -31,11 +32,11 @@ class Bling(object):
         # also, define the correct RGB channel order once you have run the test pattern
         # the other parameters are set based on the controlling application. We're using
         # the RaspberryPi as the controller with the SPI port
-        self.driver = DriverLPD8806(num=self.num_leds, c_order = ChannelOrder.GRB, SPISpeed=2, use_py_spi=True, dev='/dev/spidev0.0')
+        self.driver = LPD8806(num=self.num_leds, c_order = ChannelOrder.GRB, spi_speed=2, spi_interface=SPI_INTERFACES.PYDEV, dev='/dev/spidev0.0')
 
         # we are using the LED strip configuration, other available configurations include an LED matrix,
         # but we have only a single strip at this time
-        self.led = LEDStrip(self.driver, threadedUpdate=True, masterBrightness=self.brightness)
+        self.led = Strip(self.driver, threadedUpdate=True, brightness=self.brightness)
 
         # the frames per second is used to control how fast the animation runs. some of the animations
         # work better when run at a low frames per second
@@ -76,12 +77,12 @@ class Bling(object):
         return min_led,max_led
         
     def set_brightness(self, level):
-        self.led.setMasterBrightness(level)
+        self.led.set_brightness(level)
         self.brightness = level
 
     def stop_animation(self):
         # reset the brightness level back to the default value that was set upon initialization
-        self.led.setMasterBrightness(self.brightness)
+        self.led.set_brightness(self.brightness)
 
         if self.pattern is not None:
             self.pattern.stop()
@@ -118,19 +119,19 @@ class Bling(object):
         min_param = int(self.params['Min'])
         max_param = int(self.params['Max'])
         if min_param > 100:
-            print 'Invalid  Minimum Setting: %d, Must be 0-100' % min_param
+            print( 'Invalid  Minimum Setting: %d, Must be 0-100' % min_param )
             min_param = 0
         if max_param > 100:
-            print 'Invalid  Maximum Setting: %d, Must be 0-100' % max_param
+            print( 'Invalid  Maximum Setting: %d, Must be 0-100' % max_param )
             max_param = 100
         led_range = leds[1]-leds[0]
         min_adjust=0
         max_adjust=0
-        if min_param is not 0:
+        if min_param != 0:
             min_adjust = int((float(led_range)*(min_param)/100)+1)
             #min_adjust = int(float((min_param/led_range)*100))
             leds[0] += min_adjust
-        if max_param is not 100:
+        if max_param != 100:
             max_adjust = int((float(led_range)*(100-max_param)/100)+1)
             leds[1] -= max_adjust
         return leds
@@ -146,7 +147,7 @@ class Bling(object):
         
         try:
             # Parse command string into parameter list
-            print 'Command: %s' % cmd_str
+            print( 'Command: %s' % cmd_str )
             cmd_params=cmd_str.split(',')
             for param in cmd_params:
                 name,value=param.split('=')
@@ -169,9 +170,9 @@ class Bling(object):
             # if the pattern specifies a brightness level, then update the level for the entire strip
             try:
                 brightness = int(self.params['Brightness'])
-                self.led.setMasterBrightness(brightness)
+                self.led.set_brightness(brightness)
             except ValueError:
-                print 'Invalid Brightness Value: %d' % brightness
+                print( 'Invalid Brightness Value: %d' % brightness )
             except KeyError:
                 pass
 
@@ -183,7 +184,7 @@ class Bling(object):
         except:
             raise
             # catch any thrown exceptions and generate the error pattern
-            print 'Error processing command: %s' % cmd_str
+            print( 'Error processing command: %s' % cmd_str )
             self.pattern = self.bling_patterns.get_pattern('Error')
             self.pattern.setup(self.led, 'RED')
             self.pattern.run()

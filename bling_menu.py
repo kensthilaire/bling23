@@ -30,14 +30,14 @@ try:
 except ValueError:
     sys.exit('ERROR: Invalid Brightness Level: %s, must be 0-255' % options.brightness)
 
-print bling.menu()
+print( bling.menu() )
 
 done = False
 while not done:
     try:
         input = raw_input('Enter your selection: ')
         if input == '?':
-            print bling.menu()
+            print( bling.menu() )
         elif input == '':
             bling.stop_animation()
         elif input.lower() == 'q':
@@ -48,15 +48,15 @@ while not done:
             try:
                 bling.set_brightness(level)
             except ValueError:
-                print 'Invalid brightness level'
+                print( 'Invalid brightness level' )
         else:
             try:
                 result = bling.menu_select(int(input))
-                print result
+                print( result )
             except ValueError:
-                print 'Invalid input choose a number: %s' % input
+                print( 'Invalid input choose a number: %s' % input )
 
     except KeyboardInterrupt:
         done = True
 
-print '\nDone!'
+print( '\nDone!' )

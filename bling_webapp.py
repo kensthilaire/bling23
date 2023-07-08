@@ -122,11 +122,11 @@ class NetworkTableCmdRcvdCheck(Thread):
             if counter == 30 and self.cmd_received is False:
                 # timeout waiting to receive an initial command through
                 # the network tables
-                print 'Timeout waiting for Network Table commands...'
+                print( 'Timeout waiting for Network Table commands...' )
                 self.is_finished = True
                 set_bling_pattern( pattern='BLINKING', color='RED', speed='FAST' )
                 
-                print 'Delaying a bit to allow things to settle'
+                print( 'Delaying a bit to allow things to settle' )
                 time.sleep(2)
                 os.system('sudo shutdown -r now')
                 
@@ -136,7 +136,7 @@ class NetworkTableCmdRcvdCheck(Thread):
         self.cmd_received = True
 
     def cancel(self):
-        print 'Canceling network table cmd check...'
+        print( 'Canceling network table cmd check...' )
         self.is_finished = True
 
 network_table_cmd_check = None

@@ -33,7 +33,7 @@ def valueChanged(table, key, value, isNew):
     #tokens=value.split(',')
     #for token in tokens:
     #    key,token_value=token.split('=')
-    #    print 'name=%s value=%s' % (key,token_value)
+    #    print( 'name=%s value=%s' % (key,token_value) )
 
 def connectionListener(connected, info):
     print(info, '; Connected=%s' % connected)

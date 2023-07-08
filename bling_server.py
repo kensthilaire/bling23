@@ -7,6 +7,7 @@
 
 import sys
 import time
+import traceback
 from networktables import NetworkTables
 from optparse import OptionParser
 
@@ -48,6 +49,7 @@ else:
 try:
     bling_server = bling.Bling(int(options.leds), num_segments, int(options.brightness))
 except ValueError:
+    traceback.print_exc()
     sys.exit('ERROR: Invalid Brightness Level: %s, must be 0-255' % options.brightness)
 
 # initialize the network tables and connect to the specified server
@@ -67,8 +69,8 @@ bling_table.addTableListener(valueChanged)
 
 # start things off with a base pattern to indicate that the bling application is
 # running
-#bling_server.process_cmd('Pattern=ColorWipe,Color=YELLOW,Speed=MEDIUM')
-bling_server.process_cmd('Pattern=RainbowHalves,Color=Rainbow,Speed=MEDIUM')
+bling_server.process_cmd('Pattern=ColorWipe,Color=YELLOW,Speed=MEDIUM')
+#bling_server.process_cmd('Pattern=RainbowHalves,Color=Rainbow,Speed=MEDIUM')
 
 done = False
 while not done:

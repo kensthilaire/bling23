@@ -9,7 +9,9 @@ Created on Feb 5, 2017
 from bibliopixel.animation import StripChannelTest
 from bibliopixel.animation import BaseStripAnim
 
-import bibliopixel.colors as colors
+#import bibliopixel.colors as colors
+from bibliopixel.colors import COLORS
+from bibliopixel.colors.conversions import hue2rgb_rainbow
 
 
 from BiblioPixelAnimations.strip import Alternates
@@ -137,18 +139,18 @@ class SegmentRainbow(BaseStripAnim):
 
         for j in range(0,self._num_segments):
             led_index = (j*self._segment_size)+self._start + self._step
-            self._led.fill( colors.hue2rgb_rainbow(self._color_step), led_index, led_index )
+            self._led.fill( hue2rgb_rainbow(self._color_step), led_index, led_index )
 
         self._step += amt
         overflow = (self._start + self._step) - (self._segment_size)
         if overflow >= 0:
             self._step = overflow
 
-        if self._color_step == len(colors.hue_rainbow)-1:
+        if self._color_step == len(hue_rainbow)-1:
             self._color_step = 0
         else:
             self._color_step += amt + self._rainbowInc
-            if self._color_step > len(colors.hue_rainbow)-1:
+            if self._color_step > len(hue_rainbow)-1:
                 self._color_step = 0
 
 class SegmentLinearRainbow(BaseStripAnim):
@@ -171,12 +173,12 @@ class SegmentLinearRainbow(BaseStripAnim):
             led_index = (j*self._segment_size)+self._current
             if self._individualPixel:
                 # This setting will change the colour of each pixel on each cycle
-                self._led.fill( colors.hue2rgb_rainbow(self._step), led_index, led_index)
+                self._led.fill( hue2rgb_rainbow(self._step), led_index, led_index)
             else:
                 # This setting will change the colour of all pixels on each cycle
-                self._led.fill(colors.wheel_color(self._step), 0, led_index)
+                self._led.fill(COLORS.wheel_color(self._step), 0, led_index)
 
-        if self._step == len(colors.hue_rainbow) - 1:
+        if self._step == len(COLORS.hue_rainbow) - 1:
             self._step = 0
         else:
             self._step += amt
@@ -239,7 +241,7 @@ class BlingPatternBase(object):
         self.fps = self.speed_params[speed_str.upper()]
         return self.fps
     def setup(self):
-        print 'Setup Not Implemented!!!'
+        print( 'Setup Not Implemented!!!' )
         raise
     def clear(self):
         self.animation = None
@@ -247,7 +249,7 @@ class BlingPatternBase(object):
     def run(self):
         if self.animated is True:
             if self.animation is None:
-                print 'Animation is NOT Setup'
+                print( 'Animation is NOT Setup' )
                 raise
             
             #run the animation
@@ -264,7 +266,7 @@ class BlingPatternBase(object):
 
     def get_animation(self):
         if self.animation is None:
-            print 'Pattern is NOT set up!!!'
+            print( 'Pattern is NOT set up!!!' )
             raise
         return self.animation
 
