@@ -88,7 +88,8 @@ class Bling(object):
             self.pattern.stop()
         else:
             if self.anim is not None:
-                self.anim.stopThread(wait=True)
+                self.anim.join()
+                self.anim.stop()
             self.led.all_off()
             self.led.update()
 

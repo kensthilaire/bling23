@@ -260,7 +260,8 @@ class BlingPatternBase(object):
 
     def stop(self):
         if self.animation is not None:
-            self.animation.stopThread(wait=True)
+            #self.animation.join(1)
+            self.animation.stop()
         self.led.all_off()
         self.led.update()
 

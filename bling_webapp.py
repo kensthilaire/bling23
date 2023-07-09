@@ -51,12 +51,12 @@ class Stop:
 class Patterns:
     def GET(self):
         pattern_dict = bling_patterns.BlingPatterns(bling.get_bling_server()).patterns
-        return json.dumps( pattern_dict.keys() )
+        return json.dumps( list(pattern_dict.keys()) )
 
 class Colors:
     def GET(self):
         color_dict = bling_colors.color_map
-        return json.dumps( color_dict.keys() )
+        return json.dumps( list(color_dict.keys()) )
 
 class Speeds:
     def GET(self):

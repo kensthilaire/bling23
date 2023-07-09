@@ -1,3 +1,5 @@
-BiblioPixel<3.0
-BiblioPixelAnimations==3.20170531.153148
+BiblioPixel
+BiblioPixelAnimations
 pynetworktables
+web.py
+

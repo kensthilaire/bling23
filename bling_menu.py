@@ -35,26 +35,26 @@ print( bling.menu() )
 done = False
 while not done:
     try:
-        input = raw_input('Enter your selection: ')
-        if input == '?':
+        selection = input('Enter your selection: ')
+        if selection == '?':
             print( bling.menu() )
-        elif input == '':
+        elif selection == '':
             bling.stop_animation()
-        elif input.lower() == 'q':
+        elif selection.lower() == 'q':
             done = True
-        elif input.lower() == 'b':
-            input = raw_input('Enter brightness level(0-255): ')
-            level = int(input)
+        elif selection.lower() == 'b':
+            brightness = input('Enter brightness level(0-255): ')
+            level = int(brightness)
             try:
                 bling.set_brightness(level)
             except ValueError:
                 print( 'Invalid brightness level' )
         else:
             try:
-                result = bling.menu_select(int(input))
+                result = bling.menu_select(int(selection))
                 print( result )
             except ValueError:
-                print( 'Invalid input choose a number: %s' % input )
+                print( 'Invalid input choose a number: %s' % selection )
 
     except KeyboardInterrupt:
         done = True
