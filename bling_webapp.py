@@ -205,8 +205,11 @@ if __name__ == "__main__":
         network_table_cmd_check.start()
 
     # and launch the web server
-    app = web.application(urls, globals())
-    app.run()
+    try:
+        app = web.application(urls, globals())
+        app.run()
+    except KeyboardInterrupt:
+        print( 'Terminating Web Application' )
 
     bling.stop_animation()
 
