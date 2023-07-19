@@ -12,6 +12,7 @@ from bibliopixel.animation.strip import Strip
 from bibliopixel.colors import colors
 from bibliopixel.colors.arithmetic import color_scale
 
+import math
 
 from BiblioPixelAnimations.strip import Alternates
 from BiblioPixelAnimations.strip import Rainbows
@@ -36,59 +37,28 @@ import bling_colors
 DEFAULT_WIDTH=3
 DEFAULT_CYCLES=5
 
-'''
 # Modified Larson Scanner class to handle multiple segments within a LED strip. This
 # class will display the same pattern on each of the segments
 class SegmentLarsonScanner(Strip):
-    def __init__(self, led, num_segments, segment_size, color, tail=2, start=0, end=-1):
-        super(SegmentLarsonScanner, self).__init__(led, start, end)
-        self._color = color
-        self._num_segments = num_segments
-        self._segment_size = segment_size
-
-        self._tail = tail + 1  # makes tail math later easier
-        if self._tail >= self._size / 2:
-            self._tail = (self._size / 2) - 1
-
-        self._direction = -1
-        self._last = 0
-        self._fadeAmt = 256 / self._tail
-
-    def step(self, amt = 1):
-        self._led.all_off()
-
-        self._last = self._start + self._step
-
-        for j in range(0,self._num_segments):
-            self._led.set((j*self._segment_size)+self._last, self._color)
-
-        for i in range(self._tail):
-            for j in range(0,self._num_segments):
-                base_led = j*self._segment_size
-                top_led = (j+1)*self._segment_size
-                lower_led = base_led+self._last - i
-                if lower_led >= base_led:
-                    self._led.set(lower_led, color_scale(self._color, 255 - (self._fadeAmt * i)))
-                upper_led = base_led+self._last + i
-                if upper_led < top_led:
-                    self._led.set(upper_led, color_scale(self._color, 255 - (self._fadeAmt * i)))
-
-        if self._start + self._step >= self._segment_size-1:
-            self._direction = -self._direction
-        elif self._step <= 0:
-            self._direction = -self._direction
-
-        self._step += self._direction * amt
-'''
-
-class SegmentLarsonScanner(LarsonScanners.LarsonScanner):
 
     def __init__(self, layout, num_segments, segment_size, color, tail=2, start=0, end=-1, **kwds):
         super().__init__(layout, start, end, **kwds)
 
+        self._tail = tail + 1  # makes tail math later easier
+        if self._tail >= self._size // 2:
+            self._tail = (self._size // 2) - 1
+
+        if self._tail == 0:
+            self._tail = 1
+        self._fadeAmt = 256 // self._tail
         self._color = color
         self._num_segments = num_segments
         self._segment_size = segment_size
+
+    def pre_run(self):
+        self._direction = -1
+        self._last = 0
+        self._step = 0
 
     def step(self, amt=1):
         self.layout.all_off()
@@ -123,11 +93,16 @@ class SegmentLarsonScanner(LarsonScanners.LarsonScanner):
 
 
 class SegmentLarsonRainbow(SegmentLarsonScanner):
-    def __init__(self, layout, num_segments, segment_size, tail=2, start=0, end=-1, **kwds):
-        super().__init__(layout, num_segments, segment_size, None, start, end, **kwds)
+    def __init__(self, layout, num_segments, segment_size, color, tail=2, start=0, end=-1, rainbow_inc=4, **kwds):
+        super().__init__(layout, num_segments, segment_size, color, tail, start, end, **kwds)
+
+        self._rainbow_inc = rainbow_inc
+        self._rainbow_step = 0
 
     def _get_color(self):
-        return self.palette(self._step)
+        self._rainbow_step = (self._rainbow_step + self._rainbow_inc) % (len(self.palette)-1)
+        return self.palette( self._rainbow_step )
+
 
 class SegmentColorWipe(Strip):
     """Fill the dots progressively along the strip."""
@@ -176,25 +151,46 @@ class SegmentColorChase(Strip):
 class SegmentRainbow(Strip):
     """Display the rainbow across multiple segments"""
 
-    def __init__(self, led, num_segments, segment_size, max_led=-1, centre_out=True, rainbow_inc=4):
-        super(SegmentRainbow, self).__init__(led, 0, max_led)
+    def __init__(self, layout, num_segments, segment_size, max_led=-1, centre_out=True, rainbow_inc=4,
+                 **kwds):
+        super().__init__(layout, 0, -1, **kwds)
+        self._minLed = 0
+        self._maxLed = max_led
+        if self._maxLed < 0 or self._maxLed < self._minLed:
+            self._maxLed = self.layout.numLEDs - 1
+        self._positive = True
+        self._step = 0
         self._centerOut = centre_out
         self._rainbowInc = rainbow_inc
         self._num_segments = num_segments
         self._segment_size = segment_size
-        self._color_step = 0
 
-    def step(self, amt = 1):
+    def pre_run(self):
+        self._current = 0
+        self._step = 0
 
-        for j in range(0,self._num_segments):
-            led_index = (j*self._segment_size)+self._start + self._step
-            h = (j + self._step) % 255
-            self.layout.set(self._start + j, self.palette(h))
+    def step(self, amt=1):
+        center = float(self._maxLed) / 2
+        center_floor = math.floor(center)
+        center_ceil = math.ceil(center)
 
-        self._step += amt
-        overflow = (self._start + self._step) - (self._segment_size)
-        if overflow >= 0:
-            self._step = overflow
+        if self._centerOut:
+            self.layout.fill(
+                self.palette(self._step), int(center_floor - self._current), int(center_floor - self._current))
+            self.layout.fill(
+                self.palette(self._step), int(center_ceil + self._current), int(center_ceil + self._current))
+        else:
+            self.layout.fill(
+                self.palette(self._step), int(self._current), int(self._current))
+            self.layout.fill(
+                self.palette(self._step), int(self._maxLed - self._current), int(self._maxLed - self._current))
+
+        self._step += amt + self._rainbowInc
+
+        if self._current == center_floor:
+            self._current = self._minLed
+        else:
+            self._current += amt
 
 class SegmentLinearRainbow(Strip):
 
@@ -215,7 +211,7 @@ class SegmentLinearRainbow(Strip):
         for j in range(0,self._num_segments):
             if self._individualPixel:
                 # This setting will change the colour of each pixel on each cycle
-                self.layout.fill(self.palette(self._step), self._current, self._current)
+                self.layout.fill(self.palette(self._step), (j*self._segment_size)+self._current, (j*self._segment_size)+self._current)
             else:
                 # This setting will change the colour of all pixels on each cycle
                 self.layout.fill(colors.wheel_color(self._step), 0, self._current)
@@ -226,6 +222,7 @@ class SegmentLinearRainbow(Strip):
             self._current = self._minLed
         else:
             self._current += amt
+
 
 class SegmentColorPattern(Strip):
     """Fill the dots progressively along the strip with alternating colors."""
@@ -443,10 +440,11 @@ class ScannerPattern(BlingPatternBase):
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentLarsonScanner(led, num_segments=num_segments, segment_size=segment_size, 
-                                                  color=color, start=min_led, end=max_led)
         else:
-            self.animation = LarsonScanners.LarsonScanner(led, color=color, start=min_led, end=max_led)
+            num_segments = 1
+            segment_size = self.bling.get_num_leds()
+        self.animation = SegmentLarsonScanner(led, num_segments=num_segments, segment_size=segment_size, 
+                                              color=color, start=min_led, end=max_led)
         
 class RainbowScannerPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
@@ -459,10 +457,11 @@ class RainbowScannerPattern(BlingPatternBase):
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentLarsonRainbow(led, num_segments=num_segments, segment_size=segment_size,
-                                                  start=min_led, end=max_led)
         else:
-            self.animation = LarsonScanners.LarsonRainbow(led, start=min_led, end=max_led)
+            num_segments = 1
+            segment_size = self.bling.get_num_leds()
+        self.animation = SegmentLarsonRainbow(led, num_segments=num_segments, segment_size=segment_size,
+                                              color=None, start=min_led, end=max_led)
         
 class PingPongPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
@@ -473,6 +472,7 @@ class PingPongPattern(BlingPatternBase):
         self.led = led
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
+
         # The PingPong animation doesn't let us set the range of LEDs, just the max number
         self.animation = PixelPingPong.PixelPingPong(led, color=color, max_led=max_led)
         
@@ -495,14 +495,7 @@ class RainbowHalvesPattern(BlingPatternBase):
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
         self.led = led
         self.set_fps(speed_str)
-        colors = bling_colors.get_colors(color_str)
-        if segment_ctrl is not None:
-            num_segments = self.bling.get_num_segments()
-            segment_size = self.bling.get_segment_size()
-            self.animation = SegmentRainbow(led, num_segments=num_segments, segment_size=segment_size, 
-                                            max_led=max_led, centre_out=True)
-        else:
-            self.animation = HalvesRainbow.HalvesRainbow(led, max_led=max_led, centre_out=True)
+        self.animation = HalvesRainbow.HalvesRainbow(led, max_led=max_led, centre_out=True)
         
 class RainbowPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
@@ -512,8 +505,6 @@ class RainbowPattern(BlingPatternBase):
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
         self.led = led
         self.set_fps(speed_str)
-        # The Rainbow pattern doesn't let us set the colors...
-        colors = bling_colors.get_colors(color_str)
         self.animation = Rainbows.Rainbow(led, start=min_led, end=max_led)
         
 class RainbowCyclePattern(BlingPatternBase):
@@ -524,8 +515,6 @@ class RainbowCyclePattern(BlingPatternBase):
     def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
         self.led = led
         self.set_fps(speed_str)
-        # The Rainbow pattern doesn't let us set the colors...
-        colors = bling_colors.get_colors(color_str)
         self.animation = Rainbows.RainbowCycle(led, start=min_led, end=max_led)
         
 class LinearRainbowPattern(BlingPatternBase):
@@ -567,7 +556,7 @@ class WavePattern(BlingPatternBase):
         self.led = led
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
-        self.animation = Wave.Wave(led, color=color, cycles=DEFAULT_CYCLES, start=min_led, end=max_led)
+        self.animation = Wave.Wave(led, start=min_led, end=max_led)
         
 
         
