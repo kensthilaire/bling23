@@ -1,17 +1,24 @@
 
-from bibliopixel.drivers.SPI.LPD8806 import *
 from bibliopixel import Strip
+
+#
+# The current implementation supports the LPD8806 LED strips using the SPI device.
+# Other LED strip types and interfaces may be added over time.
+#
+from bibliopixel.drivers.SPI.LPD8806 import *
 from bibliopixel.drivers.spi_interfaces import SPI_INTERFACES
 
 import bling_patterns
 
 class Bling(object):
 
-    def __init__(self, num_leds, num_segments=None, brightness=255):
+    def __init__(self, num_leds, num_segments=None, brightness=127, ledtype='LPD8806', comms='SPI', dev='/dev/spidev0.0'):
+
         # set the total number of LEDs in the strip
         self.num_leds = num_leds
         self.num_segments = num_segments
         self.brightness = brightness
+        self.dev = dev
         
         # initialize the list of segment overrides to include all, left and right.
         # This segment list is used to override other segment control based on
@@ -30,13 +37,21 @@ class Bling(object):
 
         # initialize the driver with the type and count of LEDs that we are using
         # also, define the correct RGB channel order once you have run the test pattern
-        # the other parameters are set based on the controlling application. We're using
-        # the RaspberryPi as the controller with the SPI port
-        self.driver = LPD8806(num=self.num_leds, c_order = ChannelOrder.GRB, spi_speed=2, spi_interface=SPI_INTERFACES.PYDEV, dev='/dev/spidev0.0')
+        # the other parameters are set based on the controlling application. 
+        # We're using the RaspberryPi as the controller with the SPI port
+        if ledtype == 'LPD8806':
+            if comms == 'SPI':
+                self.driver = LPD8806(num=self.num_leds, c_order = ChannelOrder.GRB, spi_speed=2, spi_interface=SPI_INTERFACES.PYDEV, dev=self.dev)
+            else:
+                self.driver = None
+                raise Exception( 'Sorry, only communication using the SPI interface is supported at this time' )
+        else:
+            self.driver = None
+            raise Exception( 'Sorry, only LPD8806 LED strips are supported at this time' )
 
         # we are using the LED strip configuration, other available configurations include an LED matrix,
         # but we have only a single strip at this time
-        self.led = Strip(self.driver, threadedUpdate=True, brightness=self.brightness)
+        self.layout = Strip(self.driver, threadedUpdate=True, brightness=self.brightness)
 
         # the frames per second is used to control how fast the animation runs. some of the animations
         # work better when run at a low frames per second
@@ -77,12 +92,12 @@ class Bling(object):
         return min_led,max_led
         
     def set_brightness(self, level):
-        self.led.set_brightness(level)
+        self.layout.set_brightness(level)
         self.brightness = level
 
     def stop_animation(self):
         # reset the brightness level back to the default value that was set upon initialization
-        self.led.set_brightness(self.brightness)
+        self.layout.set_brightness(self.brightness)
 
         if self.pattern is not None:
             self.pattern.stop()
@@ -90,8 +105,8 @@ class Bling(object):
             if self.anim is not None:
                 self.anim.join()
                 self.anim.stop()
-            self.led.all_off()
-            self.led.update()
+            self.layout.all_off()
+            self.layout.update()
 
     def get_leds_from_segment(self, segment_str):
         segment_leds = [0,-1]
@@ -171,13 +186,13 @@ class Bling(object):
             # if the pattern specifies a brightness level, then update the level for the entire strip
             try:
                 brightness = int(self.params['Brightness'])
-                self.led.set_brightness(brightness)
+                self.layout.set_brightness(brightness)
             except ValueError:
                 print( 'Invalid Brightness Value: %d' % brightness )
             except KeyError:
                 pass
 
-            self.pattern.setup( self.led, self.params['Color'], self.params['Speed'], leds[0], leds[1], self.num_segments )
+            self.pattern.setup( self.layout, self.params['Color'], self.params['Speed'], leds[0], leds[1], self.num_segments )
 
             # run the configured pattern
             self.pattern.run()
@@ -187,7 +202,7 @@ class Bling(object):
             # catch any thrown exceptions and generate the error pattern
             print( 'Error processing command: %s' % cmd_str )
             self.pattern = self.bling_patterns.get_pattern('Error')
-            self.pattern.setup(self.led, 'RED')
+            self.pattern.setup(self.layout, 'RED')
             self.pattern.run()
 
             result = 'ERROR'

@@ -106,8 +106,8 @@ class SegmentLarsonRainbow(SegmentLarsonScanner):
 
 class SegmentColorWipe(Strip):
     """Fill the dots progressively along the strip."""
-    def __init__(self, led, num_segments, segment_size, color, start=0, end=-1):
-        super(SegmentColorWipe, self).__init__(led, start, end)
+    def __init__(self, layout, num_segments, segment_size, color, start=0, end=-1):
+        super(SegmentColorWipe, self).__init__(layout, start, end)
         self._color = color
         self._num_segments = num_segments
         self._segment_size = segment_size
@@ -128,8 +128,8 @@ class SegmentColorWipe(Strip):
 class SegmentColorChase(Strip):
     """Chase one pixel down the strip."""
 
-    def __init__(self, led, num_segments, segment_size, color, width=1, start=0, end=-1):
-        super(SegmentColorChase, self).__init__(led, start, end)
+    def __init__(self, layout, num_segments, segment_size, color, width=1, start=0, end=-1):
+        super(SegmentColorChase, self).__init__(layout, start, end)
         self._color = color
         self._width = width
         self._num_segments = num_segments
@@ -194,8 +194,8 @@ class SegmentRainbow(Strip):
 
 class SegmentLinearRainbow(Strip):
 
-    def __init__(self, led, num_segments, segment_size, individual_pixel=False, max_led=-1):
-        super(SegmentLinearRainbow, self).__init__(led, 0, -1)
+    def __init__(self, layout, num_segments, segment_size, individual_pixel=False, max_led=-1):
+        super(SegmentLinearRainbow, self).__init__(layout, 0, -1)
         self._step = 0
         self._current = 0
         self._minLed = 0
@@ -227,8 +227,8 @@ class SegmentLinearRainbow(Strip):
 class SegmentColorPattern(Strip):
     """Fill the dots progressively along the strip with alternating colors."""
 
-    def __init__(self, led, num_segments, segment_size, colors, width, dir = True, start=0, end=-1):
-        super(SegmentColorPattern, self).__init__(led, start, end)
+    def __init__(self, layout, num_segments, segment_size, colors, width, dir = True, start=0, end=-1):
+        super(SegmentColorPattern, self).__init__(layout, start, end)
         self._width = width
         self._total_width = self._width * len(self.palette)
         self._dir = dir
@@ -281,14 +281,14 @@ class BlingPatternBase(object):
             self.animation.run(fps=self.fps, threaded=True)
         else:
             # no animation, just update the LEDs
-            self.led.update()
+            self.layout.update()
 
     def stop(self):
         if self.animation is not None:
             #self.animation.join(1)
             self.animation.stop()
-        self.led.all_off()
-        self.led.update()
+        self.layout.all_off()
+        self.layout.update()
 
     def get_animation(self):
         if self.animation is None:
@@ -306,12 +306,12 @@ class ErrorPattern(BlingPatternBase):
         super(ErrorPattern,self).__init__('Error', bling_mgr, animated=True)
         self.fps = 25
         
-    def setup(self, led, color_str='RED', speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+    def setup(self, layout, color_str='RED', speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
         # for the error pattern, we will ignore all settings and just blink the color red on
         # all LEDs at a super fast rate
-        self.led = led
+        self.layout = layout
         colors = bling_colors.get_colors(color_str)
-        self.animation = PartyMode.PartyMode(led, colors=colors)
+        self.animation = PartyMode.PartyMode(layout, colors=colors)
     
 #
 # Class that implements the solid color pattern. This class doesn't use any animation
@@ -321,10 +321,10 @@ class SolidPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(SolidPattern,self).__init__('Solid', bling_mgr)
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         color = bling_colors.get_first_color(color_str)
-        self.led.fill(color, start=min_led, end=max_led)
+        self.layout.fill(color, start=min_led, end=max_led)
 
 #
 # Class that implements the blinking pattern. This class uses the PartyMode animation, slowing
@@ -335,11 +335,11 @@ class BlinkingPattern(BlingPatternBase):
         super(BlinkingPattern,self).__init__('Blinking', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = PartyMode.PartyMode(led, colors=colors, start=min_led, end=max_led)
+        self.animation = PartyMode.PartyMode(layout, colors=colors, start=min_led, end=max_led)
 
         
 class AlternatesPattern(BlingPatternBase):
@@ -347,94 +347,94 @@ class AlternatesPattern(BlingPatternBase):
         super(AlternatesPattern,self).__init__('Alternates', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 2, 'MEDIUM': 5, 'FAST':10 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
         if len(colors) < 2:
             colors.extend(bling_colors.get_colors('YELLOW'))
-        self.animation = Alternates.Alternates(led, max_led=max_led, color1=colors[0],color2=colors[1])
+        self.animation = Alternates.Alternates(layout, max_led=max_led, color1=colors[0],color2=colors[1])
         
 class ColorChasePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(ColorChasePattern,self).__init__('ColorChase', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':20 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentColorChase(led, num_segments=num_segments, segment_size=segment_size,
+            self.animation = SegmentColorChase(layout, num_segments=num_segments, segment_size=segment_size,
                                               color=color, width=DEFAULT_WIDTH, start=min_led, end=max_led)
         else:
-            self.animation = ColorChase.ColorChase(led, color=color, width=DEFAULT_WIDTH, start=min_led, end=max_led)
+            self.animation = ColorChase.ColorChase(layout, color=color, width=DEFAULT_WIDTH, start=min_led, end=max_led)
 
 class ColorFadePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(ColorFadePattern,self).__init__('ColorFade', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = ColorFade.ColorFade(led, colors=colors, start=min_led, end=max_led)
+        self.animation = ColorFade.ColorFade(layout, colors=colors, start=min_led, end=max_led)
         
 class ColorsPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(ColorsPattern,self).__init__('ColorsPattern', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentColorPattern(led, num_segments=num_segments, segment_size=segment_size,
+            self.animation = SegmentColorPattern(layout, num_segments=num_segments, segment_size=segment_size,
                                                  colors=colors, width=DEFAULT_WIDTH, dir=True, start=min_led, end=max_led)
         else:
-            self.animation = ColorPattern.ColorPattern(led, colors=colors, width=DEFAULT_WIDTH, dir=True, start=min_led, end=max_led)
+            self.animation = ColorPattern.ColorPattern(layout, colors=colors, width=DEFAULT_WIDTH, dir=True, start=min_led, end=max_led)
         
 class ColorWipePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(ColorWipePattern,self).__init__('ColorWipe', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 15, 'FAST':25 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentColorWipe(led, num_segments=num_segments, segment_size=segment_size, 
+            self.animation = SegmentColorWipe(layout, num_segments=num_segments, segment_size=segment_size, 
                                               color=color, start=min_led, end=max_led)
         else:
-            self.animation = ColorWipe.ColorWipe(led, color=color, start=min_led, end=max_led)
+            self.animation = ColorWipe.ColorWipe(layout, color=color, start=min_led, end=max_led)
         
 class FireFliesPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(FireFliesPattern,self).__init__('FireFlies', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 20, 'MEDIUM': 40, 'FAST':80 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = FireFlies.FireFlies(led, colors=colors, start=min_led, end=max_led)
+        self.animation = FireFlies.FireFlies(layout, colors=colors, start=min_led, end=max_led)
         
 class ScannerPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(ScannerPattern,self).__init__('Scanner', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':25 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
         if segment_ctrl is not None:
@@ -443,7 +443,7 @@ class ScannerPattern(BlingPatternBase):
         else:
             num_segments = 1
             segment_size = self.bling.get_num_leds()
-        self.animation = SegmentLarsonScanner(led, num_segments=num_segments, segment_size=segment_size, 
+        self.animation = SegmentLarsonScanner(layout, num_segments=num_segments, segment_size=segment_size, 
                                               color=color, start=min_led, end=max_led)
         
 class RainbowScannerPattern(BlingPatternBase):
@@ -451,8 +451,8 @@ class RainbowScannerPattern(BlingPatternBase):
         super(RainbowScannerPattern,self).__init__('RainbowScanner', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
@@ -460,7 +460,7 @@ class RainbowScannerPattern(BlingPatternBase):
         else:
             num_segments = 1
             segment_size = self.bling.get_num_leds()
-        self.animation = SegmentLarsonRainbow(led, num_segments=num_segments, segment_size=segment_size,
+        self.animation = SegmentLarsonRainbow(layout, num_segments=num_segments, segment_size=segment_size,
                                               color=None, start=min_led, end=max_led)
         
 class PingPongPattern(BlingPatternBase):
@@ -468,72 +468,72 @@ class PingPongPattern(BlingPatternBase):
         super(PingPongPattern,self).__init__('PingPong', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
 
         # The PingPong animation doesn't let us set the range of LEDs, just the max number
-        self.animation = PixelPingPong.PixelPingPong(led, color=color, max_led=max_led)
+        self.animation = PixelPingPong.PixelPingPong(layout, color=color, max_led=max_led)
         
 class PartyModePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(PartyModePattern,self).__init__('PartyMode', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 5, 'MEDIUM': 10, 'FAST':30 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = PartyMode.PartyMode(led, colors=colors, start=min_led, end=max_led)
+        self.animation = PartyMode.PartyMode(layout, colors=colors, start=min_led, end=max_led)
         
 class RainbowHalvesPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(RainbowHalvesPattern,self).__init__('RainbowHalves', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
-        self.animation = HalvesRainbow.HalvesRainbow(led, max_led=max_led, centre_out=True)
+        self.animation = HalvesRainbow.HalvesRainbow(layout, max_led=max_led, centre_out=True)
         
 class RainbowPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(RainbowPattern,self).__init__('Rainbow', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 50, 'MEDIUM': 100, 'FAST':200 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
-        self.animation = Rainbows.Rainbow(led, start=min_led, end=max_led)
+        self.animation = Rainbows.Rainbow(layout, start=min_led, end=max_led)
         
 class RainbowCyclePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(RainbowCyclePattern,self).__init__('RainbowCycle', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 100, 'MEDIUM': 200, 'FAST':400 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
-        self.animation = Rainbows.RainbowCycle(led, start=min_led, end=max_led)
+        self.animation = Rainbows.RainbowCycle(layout, start=min_led, end=max_led)
         
 class LinearRainbowPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(LinearRainbowPattern,self).__init__('LinearRainbow', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 25, 'MEDIUM': 50, 'FAST':100 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
         # LinearRainbow doesn't let us set the colors or the LED range.
         if segment_ctrl is not None:
             num_segments = self.bling.get_num_segments()
             segment_size = self.bling.get_segment_size()
-            self.animation = SegmentLinearRainbow(led, num_segments=num_segments, segment_size=segment_size, 
+            self.animation = SegmentLinearRainbow(layout, num_segments=num_segments, segment_size=segment_size, 
                                                   individual_pixel=True, max_led=max_led)
         else:
-            self.animation = LinearRainbow.LinearRainbow(led, individual_pixel=True, max_led=max_led)
+            self.animation = LinearRainbow.LinearRainbow(layout, individual_pixel=True, max_led=max_led)
         
 class SearchLightsPattern(BlingPatternBase):
     def __init__(self, bling_mgr):
@@ -541,22 +541,22 @@ class SearchLightsPattern(BlingPatternBase):
         super(SearchLightsPattern,self).__init__('SearchLights', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 10, 'MEDIUM': 20, 'FAST':40 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = Searchlights.Searchlights(led, colors=colors, start=min_led, end=max_led)
+        self.animation = Searchlights.Searchlights(layout, colors=colors, start=min_led, end=max_led)
         
 class WavePattern(BlingPatternBase):
     def __init__(self, bling_mgr):
         super(WavePattern,self).__init__('Wave', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 3, 'MEDIUM': 6, 'FAST':12 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         color = bling_colors.get_first_color(color_str)
-        self.animation = Wave.Wave(led, start=min_led, end=max_led)
+        self.animation = Wave.Wave(layout, start=min_led, end=max_led)
         
 
         
@@ -565,11 +565,11 @@ class TestPattern(BlingPatternBase):
         super(TestPattern,self).__init__('Test', bling_mgr, animated=True)
         self.speed_params = { 'SLOW': 2, 'MEDIUM': 4, 'FAST':8 }
         
-    def setup(self, led, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
-        self.led = led
+    def setup(self, layout, color_str, speed_str='MEDIUM', min_led=0, max_led=-1, segment_ctrl=None):
+        self.layout = layout
         self.set_fps(speed_str)
         colors = bling_colors.get_colors(color_str)
-        self.animation = StripChannelTest(led)
+        self.animation = StripChannelTest(layout)
 
 class BlingPatterns(object):
     def __init__(self, bling_mgr):
