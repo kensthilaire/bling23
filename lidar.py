@@ -28,7 +28,6 @@ class Lidar(RPLidar):
         self.MAX_DISTANCE = int(25 * 39.37)
 
         self.reset_closest()
-        #self.closest = { 'valid': False, 'distance': self.MAX_DISTANCE, 'angle': 0 }
 
     def get_closest(self):
         with self.scan_lock:
