@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 class FrcController(Joystick):
     def __init__(self, path=None, team_number=9999):
+        super().__init__(path)
 
         self.inst = ntcore.NetworkTableInstance.getDefault()
         self.inst.startClient4('Test client')
@@ -42,8 +43,8 @@ class FrcController(Joystick):
         #
         publisher = self.publishers.get('RightJoystickX', None)
 
+        speed = 0.0
         if scan_data.get('valid', False)==True:
-            speed = 0.0
             if publisher:
                 angle = scan_data['angle']
                 if angle < 5 or angle > 355:
@@ -59,8 +60,8 @@ class FrcController(Joystick):
                 if angle > 180:
                     speed *= -1.0
 
-                print( 'Setting speed to %0.1f' % speed )
-                publisher.set( speed )
+        print( 'Setting speed to %0.1f' % speed )
+        publisher.set( speed )
 
     def lidar_control(self, port='/dev/ttyUSB0', capture_distance=48, capture_zone='0-45,315-359', min_distance=24):
         if self.lidar == None:
