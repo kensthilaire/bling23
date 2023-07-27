@@ -9,6 +9,8 @@ from enum import Enum, auto
 
 from joystick import Joystick
 from lidar import Lidar
+from bling import Bling
+import bling_patterns
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,7 +19,9 @@ class LidarStates(Enum):
     ACQUIRING = auto()
     ACQUIRED = auto()
     FOLLOWING = auto()
+    STOPPED = auto()
     TERMINATING = auto()
+    TERMINATED = auto()
 
 class FrcController(Joystick):
     def __init__(self, path=None, team_number=9999):
@@ -37,6 +41,7 @@ class FrcController(Joystick):
         self.lidar = None
         self.lidar_state = LidarStates.INITIAL
         
+        self.bling = None
 
     def joystick_control(self):
         for event in self.gamepad.read_loop():
@@ -48,14 +53,29 @@ class FrcController(Joystick):
 
     def set_lidar_state(self,new_state):
         curr_state = self.lidar_state
-        print( 'State Transition From %s to %s' % (curr_state.name, new_state.name) )
-        if new_state == LidarStates.ACQUIRING:
-            pass
-        elif new_state == LidarStates.ACQUIRED:
-            if self.follow_distance != 0:
-                self.lidar.cancel()
+
+        if curr_state != new_state:
+            print( 'State Transition From %s to %s' % (curr_state.name, new_state.name) )
+            if new_state == LidarStates.ACQUIRING:
+                self.set_bling('Pattern=Scanner,Color=RED,Speed=MEDIUM')
+            elif new_state == LidarStates.ACQUIRED:
+                if self.follow_distance != 0:
+                    self.lidar.cancel()
+                self.set_bling('Pattern=Solid,Color=GREEN')
+            elif new_state == LidarStates.STOPPED:
+                self.set_bling('Pattern=Solid,Color=GREEN')
+            elif new_state == LidarStates.FOLLOWING:
+                self.set_bling('Pattern=Blinking,Color=GREEN,Speed=MEDIUM')
+            elif new_state == LidarStates.TERMINATING:
+                self.set_bling('Pattern=Blinking,Color=YELLOW,Speed=MEDIUM,Segment=ALL')
+            elif new_state == LidarStates.TERMINATED:
+                self.set_bling('Pattern=OFF')
 
         self.lidar_state = new_state
+
+    def set_bling( self, cmd_string ):
+        if self.bling:
+            self.bling.process_cmd(cmd_string)
 
     def lidar_align(self, scan_data):
         #
@@ -107,8 +127,10 @@ class FrcController(Joystick):
                 distance = scan_data['distance']
                 if distance <= self.follow_distance: 
                     moving_speed = 0.0
+                    self.set_lidar_state( LidarStates.STOPPED )
                 elif distance < self.follow_distance + 12:
                     moving_speed = 0.2
+                    self.set_lidar_state( LidarStates.FOLLOWING )
                 elif distance < self.follow_distance + 24:
                     moving_speed = 0.4
                 else:
@@ -137,7 +159,7 @@ class FrcController(Joystick):
         self.lidar.closest_in_range(ranges=None, min_distance=capture_distance, sample_interval=0.05, callback=self.lidar_align)
 
         if self.follow_distance != 0:
-            self.set_lidar_state( LidarStates.FOLLOWING )
+            self.set_lidar_state( LidarStates.STOPPED )
             self.lidar.closest_in_range(ranges=None, min_distance=self.lidar.MAX_DISTANCE, sample_interval=0.05, callback=self.lidar_follow)
 
         self.lidar_halt()
@@ -150,6 +172,7 @@ if __name__ == '__main__':
     #
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', dest='debug', default=False)
+    parser.add_argument('-b', '--bling', action='store_true', dest='bling', default=False)
     parser.add_argument('-j', '--joystick', action='store_true', dest='joystick', default=False)
     parser.add_argument('-l', '--lidar', action='store_true', dest='lidar', default=False)
     parser.add_argument('-c', '--capture_distance', action='store', dest='capture_distance', default='42')
@@ -161,6 +184,9 @@ if __name__ == '__main__':
     controller = FrcController(team_number=9999)
 
     try:
+        if options.bling:
+            controller.bling = Bling( 16, 1, 100 )
+
         if options.joystick:
             controller.joystick_control()
         elif options.lidar:
@@ -172,9 +198,12 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if controller.lidar:
             print( 'Terminating LIDAR Session' )
+            controller.set_lidar_state( LidarStates.TERMINATING)
             controller.lidar.cancel()
 
     if controller.lidar:
         print( 'Shutting down LIDAR' )
         controller.lidar.terminate()
 
+    time.sleep(2)
+    controller.set_lidar_state( LidarStates.TERMINATED )
