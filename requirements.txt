@@ -2,4 +2,5 @@ BiblioPixel
 BiblioPixelAnimations
 pynetworktables
 web.py
-
+evdev
+rplidar-roboticia
